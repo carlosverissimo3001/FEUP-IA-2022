@@ -76,7 +76,7 @@ class Solution:
         solution = self.solution.copy()
         it = 0
 
-        while it < 1000:
+        while it < 100:
             neighbour = self.neighbour3(rb, solution.copy())
             it += 1
             evaluation = self.evaluate(neighbour)
@@ -95,7 +95,7 @@ class Solution:
         it = 0
         T = 1000
 
-        while it < 1000:
+        while it < 100:
             T = self.T_schedule(T)
             neighbour = self.neighbour3(rb, solution.copy())
             evaluation = self.evaluate(neighbour)
@@ -109,16 +109,31 @@ class Solution:
         return solution, ev
 
     def T_schedule(self, T):
-        return 0.85 * T
+        return 0.90 * T
 
     def genetic_algorithm(self):
-        population = self.create_initial_population()
+        ev = []
+        size_of_population = 8
+
+        population = self.create_initial_population(size_of_population)
 
         it = 0
-        while it < 1000:
+        while it < 100:
+            it += 1
+            fitness = self.evaluate_fitness(population)
             x, y = self.select_parents(population)
 
-            self.crossover(population)
+            index = fitness.index(max(fitness)) # most fit element
+            elite = population[index]
+
+            ev.append(max(fitness))
+
+
+            population = self.crossover(population, x, y, elite)
+
+            #self.mutation(population, size_of_population)
+
+        return elite, ev
 
 
 
@@ -127,23 +142,57 @@ class Solution:
 
         for i in range(size):
             population.append([])
-            for j in range(8):
-                population[i].append(j)    # 8 chromosomes, two for each semaphore
+            for j in range(8): # 8 chromosomes, two for each semaphore
+                population[i].append(random.randrange(2, 10))
 
         return population
 
-    def select_parents(self, population):
+    def evaluate_fitness(self, population):
         fitness = []
         for i in range(len(population)):
             fitness.append(self.evaluate(population[i]))
 
+        return fitness
+
+    def select_parents(self, fitness):
+        #choose elements for tournament
+        el1 = random.randrange(0, 7)
+        el2 = random.randrange(0, 7)
+        el3 = random.randrange(0, 7)
+        el4 = random.randrange(0, 7)
+
+        if fitness[el1] > fitness[el2]:
+            parent1 = el1
+        else:
+            parent1 = el2
+
+        if fitness[el3] > fitness[el4]:
+            parent2 = el3
+        else:
+            parent2 = el4
+
+        return parent1, parent2
 
 
-    def crossover(self, population):
-        return 1
+    def crossover(self, population, parent1, parent2, elite):
+        new_population = []
+        new_population.append(elite)
+        new_population.append(population[random.randrange(0,7)])
+        new_population.append(population[parent1][:4] + population[parent2][4:])
+        new_population.append(population[parent2][:4] + population[parent1][4:])
+        new_population.append(population[parent1][:6] + population[parent2][6:])
+        new_population.append(population[parent2][:6] + population[parent1][6:])
+        new_population.append(population[parent1][:2] + population[parent2][2:])
+        new_population.append(population[parent2][:2] + population[parent1][2:])
 
-    def mutation(self, population):
-        return 1
+        return new_population
+
+
+    def mutation(self, population, size):
+        percentage = 0.05
+        for i in range(size):
+            if random.random() > percentage:
+                population[i][random.randrange(0, 7)] = random.randrange(2, 10)
 
 
 
@@ -165,11 +214,17 @@ if __name__ == "__main__":
     print(sol.solution)
 
     sol1, hill_evals = sol.hill_climbing(roundabout)
+    print("Last value with hill climbing was ", sol1)
 
     sol2, annealing_evals = sol.simulated_annealing(roundabout)
+    print("Last value with simulated annealing was ", sol2)
+
+    sol3, genetic_evals = sol.genetic_algorithm()
+
 
     plt.plot(hill_evals, 'g', label='Hill Climbing')
     plt.plot(annealing_evals, 'b', label='Simulated Annealing')
+    plt.plot(genetic_evals, 'r', label='Genetic Algorithm')
 
     #plt.title('Title')
 
