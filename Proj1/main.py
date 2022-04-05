@@ -1,4 +1,4 @@
-from new import *
+from algorithms import *
 
 
 if __name__ == "__main__":

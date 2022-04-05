@@ -91,20 +91,20 @@ class Solution:
         it = 0
         while it < 100:
             it += 1
-            fitness = self.evaluate_fitness(population)
-            x, y = self.select_parents(population)
+            #fitness = self.evaluate_fitness(population)
+            #x, y = self.select_parents(population)
 
-            index = fitness.index(max(fitness)) # most fit element
-            elite = population[index]
+            #index = fitness.index(max(fitness)) # most fit element
+            #elite = population[index]
 
-            ev.append(max(fitness))
+            #ev.append(max(fitness))
 
 
-            population = self.crossover(population, x, y, elite)
+            population = self.crossover(population)
 
             #self.mutation(population, size_of_population)
 
-        return elite, ev
+        return ev
 
 
 
@@ -126,12 +126,23 @@ class Solution:
 
         return fitness
 
-    def select_parents(self, fitness):
+    def select_parents(self, fitness, option):
+
+        population_size = len(fitness)
+
+        if(option == 1):
+            return self.tournament_selection(fitness, population_size)
+        else:
+            return self.roulette_selection(fitness, population_size)
+
+    
+    def tournament_selection(self, fitness, population_size):
+
         #choose elements for tournament
-        el1 = random.randrange(0, 7)
-        el2 = random.randrange(0, 7)
-        el3 = random.randrange(0, 7)
-        el4 = random.randrange(0, 7)
+        el1 = random.randrange(population_size)
+        el2 = random.randrange(population_size)
+        el3 = random.randrange(population_size)
+        el4 = random.randrange(population_size)
 
         if fitness[el1] > fitness[el2]:
             parent1 = el1
@@ -143,11 +154,17 @@ class Solution:
         else:
             parent2 = el4
 
-        return parent1, parent2
+        return parent1, parent2 # index of the parents
+
+    def roulette_selection(fitness, population_size):
+        return 5, 6
 
 
-    def crossover(self, population, parent1, parent2, elite):
+    #dar outro nome a crossover e criar outra funçao crossover para combinar os dois pais
+    def crossover(self, population):
+        total_population = len(population)
         new_population = []
+        '''
         new_population.append(elite)
         new_population.append(population[random.randrange(0,7)])
         new_population.append(population[parent1][:4] + population[parent2][4:])
@@ -156,13 +173,37 @@ class Solution:
         new_population.append(population[parent2][:6] + population[parent1][6:])
         new_population.append(population[parent1][:2] + population[parent2][2:])
         new_population.append(population[parent2][:2] + population[parent1][2:])
+        '''
+        fitness = self.evaluate_fitness(population)
+
+        for i in range (total_population - 1):
+            if random.random() < 0.2:   
+                # randomly selected element passes to next generation
+                parent = population[random.randrange(total_population)]
+                print("parent in crossover0 is", parent)
+                self.mutation(parent)
+                new_population.append(parent)
+            else:
+                #crossover between 2 parents
+                parent1, parent2 = self.select_parents(fitness, 1)  #mudar 2 argumento para input
+                child = population[parent1][:round(total_population/2)] + population[parent2][round(total_population/2):]
+                self.mutation(child)
+                new_population.append(child)
+
+                
+
+        
 
         return new_population
 
 
-    def mutation(self, population, size):
+    def mutation(self, chromosome):
         percentage = 0.05
-        for i in range(size):
-            if random.random() > percentage:
-                population[i][random.randrange(0, 7)] = random.randrange(2, 10)
+        for i in range(len(chromosome)):
+            if random.random() < percentage:
+                if(chromosome[i] == 1):
+                    chromosome[i] = 0
+                else:
+                    chromosome[i] = 1
+
 
