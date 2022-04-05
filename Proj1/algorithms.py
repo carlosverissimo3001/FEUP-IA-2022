@@ -7,7 +7,7 @@ class Solution:
         self.solution = [random.randint(0,1) for _ in range(num_projs * num_colaborators)]
 
     def evaluate(self, solution) -> int:
-        return sum(solution) * math.sqrt(solution[3]) / 1.7
+        return sum(solution) 
 
     def neighbour1(self, solution):
         """Change the value of one slot"""
@@ -46,6 +46,8 @@ class Solution:
         ev = []
         solution = self.solution.copy()
         it = 0
+        best_sol = []
+        best_sol_eval = 0
 
         while it < 100:
             neighbour = self.neighbour3(solution.copy())
@@ -56,11 +58,18 @@ class Solution:
             if evaluation > self.evaluate(solution):
                 solution = neighbour
                 it = 0
+                if evaluation > best_sol_eval:
+                    #all time best
+                    best_sol = neighbour
+                    best_sol_eval = evaluation
 
-        return solution, ev
+        return best_sol, ev
 
     def simulated_annealing(self):
         ev = []
+
+        best_sol = []
+        best_sol_eval = 0
 
         solution = self.solution.copy()
         it = 0
@@ -76,8 +85,12 @@ class Solution:
 
             if delta > 0 or exp(delta / T) > random.random():
                 solution = neighbour
+                if evaluation > best_sol_eval:
+                    #all time best
+                    best_sol = neighbour
+                    best_sol_eval = evaluation
 
-        return solution, ev
+        return best_sol, ev
 
     def T_schedule(self, T):
         return 0.90 * T
@@ -117,7 +130,6 @@ class Solution:
             #for j in range(self.num_colaborators * self.num_projs): # n chromossomes for each project
             #    population[i].append(random.randint(0,1))
         
-        print("initial population is", population)
         return population
 
     def evaluate_fitness(self, population):

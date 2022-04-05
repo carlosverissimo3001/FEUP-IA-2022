@@ -8,13 +8,13 @@ if __name__ == "__main__":
     print(sol.solution)
 
     sol1, hill_evals = sol.hill_climbing()
-    print("Last value with hill climbing was ", sol1)
+    print("Best value with hill climbing was ", sol1)
 
     sol2, annealing_evals = sol.simulated_annealing()
-    print("Last value with simulated annealing was ", sol2)
+    print("Best value with simulated annealing was ", sol2)
 
     sol3, genetic_evals = sol.genetic_algorithm(25)
-    print(genetic_evals)
+    print("Best value with genetic algorithm was ", sol3)
 
 
     plt.plot(hill_evals, 'g', label='Hill Climbing')
