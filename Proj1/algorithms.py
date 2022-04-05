@@ -82,29 +82,29 @@ class Solution:
     def T_schedule(self, T):
         return 0.90 * T
 
-    def genetic_algorithm(self):
+    def genetic_algorithm(self, size_of_population):
         ev = []
-        size_of_population = 8
 
         population = self.create_initial_population(size_of_population)
 
         it = 0
         while it < 100:
             it += 1
-            #fitness = self.evaluate_fitness(population)
-            #x, y = self.select_parents(population)
 
-            #index = fitness.index(max(fitness)) # most fit element
-            #elite = population[index]
+            population, current_best = self.generate_next_population(population)
 
-            #ev.append(max(fitness))
+            ev.append(current_best)
 
+        #check the best of the final solution 
+        fitness = self.evaluate_fitness(population)
 
-            population = self.crossover(population)
+        top_fit = max(fitness)  # value of the fittest element
+        index = fitness.index(top_fit) # most fit element index
+        all_time_best = population[index]   # actual element
+        
+        ev.append(top_fit)
 
-            #self.mutation(population, size_of_population)
-
-        return ev
+        return all_time_best, ev
 
 
 
@@ -116,7 +116,8 @@ class Solution:
             #population.append([])
             #for j in range(self.num_colaborators * self.num_projs): # n chromossomes for each project
             #    population[i].append(random.randint(0,1))
-
+        
+        print("initial population is", population)
         return population
 
     def evaluate_fitness(self, population):
@@ -161,26 +162,24 @@ class Solution:
 
 
     #dar outro nome a crossover e criar outra funçao crossover para combinar os dois pais
-    def crossover(self, population):
+    def generate_next_population(self, population):
         total_population = len(population)
         new_population = []
-        '''
-        new_population.append(elite)
-        new_population.append(population[random.randrange(0,7)])
-        new_population.append(population[parent1][:4] + population[parent2][4:])
-        new_population.append(population[parent2][:4] + population[parent1][4:])
-        new_population.append(population[parent1][:6] + population[parent2][6:])
-        new_population.append(population[parent2][:6] + population[parent1][6:])
-        new_population.append(population[parent1][:2] + population[parent2][2:])
-        new_population.append(population[parent2][:2] + population[parent1][2:])
-        '''
+
+
         fitness = self.evaluate_fitness(population)
+
+        top_fit = max(fitness)  # value of the fittest element
+        index = fitness.index(top_fit) # most fit element index
+        elite = population[index]   # actual element
+        
+        new_population.append(elite)
+
 
         for i in range (total_population - 1):
             if random.random() < 0.2:   
                 # randomly selected element passes to next generation
                 parent = population[random.randrange(total_population)]
-                print("parent in crossover0 is", parent)
                 self.mutation(parent)
                 new_population.append(parent)
             else:
@@ -190,11 +189,8 @@ class Solution:
                 self.mutation(child)
                 new_population.append(child)
 
-                
-
         
-
-        return new_population
+        return new_population, top_fit
 
 
     def mutation(self, chromosome):

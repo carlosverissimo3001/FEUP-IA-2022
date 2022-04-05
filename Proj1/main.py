@@ -13,7 +13,8 @@ if __name__ == "__main__":
     sol2, annealing_evals = sol.simulated_annealing()
     print("Last value with simulated annealing was ", sol2)
 
-    sol3, genetic_evals = sol.genetic_algorithm()
+    sol3, genetic_evals = sol.genetic_algorithm(25)
+    print(genetic_evals)
 
 
     plt.plot(hill_evals, 'g', label='Hill Climbing')
