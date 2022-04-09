@@ -1,34 +1,52 @@
 from formulation import *
 
 class Solution:
-    def __init__(self, num_projs, num_colaborators):
-        self.num_colaborators = num_colaborators
+    def __init__(self, num_projs, num_collaborators):
+        self.num_collaborators = num_collaborators
         self.num_projs = num_projs
-        self.solution = [random.randint(0,1) for _ in range(num_projs * num_colaborators)]
+        self.solution = []
+        for _ in range (num_projs):
+            self.solution.append([random.randint(0,1) for _ in range(num_collaborators)])
 
     def evaluate(self, solution) -> int:
-        return sum(solution) 
+        temp = ( sum(solution[0]) + sum(solution[1]) + sum(solution[2]) )
+        return temp
 
     def neighbour1(self, solution):
         """Change the value of one slot"""
-        slot = random.randrange(len(solution))
-        new_value = random.randint(0,1)
-                
-        solution[slot] = new_value
+        proj = random.randrange(self.num_projs)
+        collab = random.randrange(self.num_collaborators)
+
+        if solution[proj][collab] == 1:
+            solution[proj][collab] = 0
+        else:
+            solution[proj][collab] = 1
         
         return solution
 
 
     def neighbour2(self, solution):
         """Exchange the slots of two slots"""
-        size = len(solution)
-        slot1 = random.randrange(size)
-        slot2 = random.randrange(size)
+        size = self.num_projs
+        collabs_num = self.num_collaborators
 
-        new_value1 = random.randint(0,1)
-        new_value2 = random.randint(0,1)
+        proj1 = random.randrange(size)
+        proj2 = random.randrange(size)
 
-        solution[slot1], solution[slot2] = new_value1, new_value2
+        collab1 = random.randrange(collabs_num)
+        collab2 = random.randrange(collabs_num)
+
+
+        if solution[proj1][collab1] == 1:
+            solution[proj1][collab1] = 0
+        else:
+            solution[proj1][collab1] = 1
+
+
+        if solution[proj2][collab2] == 1:
+            solution[proj2][collab2] = 0
+        else:
+            solution[proj2][collab2] = 1
         
         return solution
 
@@ -50,12 +68,13 @@ class Solution:
         best_sol_eval = 0
 
         while it < 100:
-            neighbour = self.neighbour3(solution.copy())
             it += 1
+
+            neighbour = self.neighbour3(copy.deepcopy(solution))
             evaluation = self.evaluate(neighbour)
-            ev.append(evaluation)
 
             if evaluation > self.evaluate(solution):
+                ev.append(evaluation)
                 solution = neighbour
                 it = 0
                 if evaluation > best_sol_eval:
@@ -76,14 +95,15 @@ class Solution:
         T = 1000
 
         while it < 100:
+            it += 1
+
             T = self.T_schedule(T)
-            neighbour = self.neighbour3(solution.copy())
+            neighbour = self.neighbour3(copy.deepcopy(solution))
             evaluation = self.evaluate(neighbour)
             delta = evaluation - self.evaluate(solution)
-            it += 1
-            ev.append(evaluation)
 
             if delta > 0 or exp(delta / T) > random.random():
+                ev.append(evaluation)
                 solution = neighbour
                 if evaluation > best_sol_eval:
                     #all time best
@@ -125,9 +145,14 @@ class Solution:
         population = []
 
         for i in range(size):
-            population.append([random.randint(0,1) for _ in range(self.num_projs * self.num_colaborators)])
+            #population.append([random.randint(0,1) for _ in range(self.num_projs * self.num_collaborators)])
+            temp = []
+            for _ in range (self.num_projs):
+                temp.append([random.randint(0,1) for _ in range(self.num_collaborators)])
+            population.append(temp)
+        
             #population.append([])
-            #for j in range(self.num_colaborators * self.num_projs): # n chromossomes for each project
+            #for j in range(self.num_collaborators * self.num_projs): # n chromossomes for each project
             #    population[i].append(random.randint(0,1))
         
         return population
@@ -183,7 +208,7 @@ class Solution:
 
         top_fit = max(fitness)  # value of the fittest element
         index = fitness.index(top_fit) # most fit element index
-        elite = population[index]   # actual element
+        elite = copy.deepcopy(population[index])   # actual element
         
         new_population.append(elite)
 
@@ -197,7 +222,7 @@ class Solution:
             else:
                 #crossover between 2 parents
                 parent1, parent2 = self.select_parents(fitness, 1)  #mudar 2 argumento para input
-                child = population[parent1][:round(total_population/2)] + population[parent2][round(total_population/2):]
+                child = population[parent1][:round(self.num_projs/2)] + population[parent2][round(self.num_projs/2):]
                 self.mutation(child)
                 new_population.append(child)
 
@@ -208,10 +233,11 @@ class Solution:
     def mutation(self, chromosome):
         percentage = 0.05
         for i in range(len(chromosome)):
-            if random.random() < percentage:
-                if(chromosome[i] == 1):
-                    chromosome[i] = 0
-                else:
-                    chromosome[i] = 1
+            for j in range (len(chromosome[0])):
+                if random.random() < percentage:
+                    if(chromosome[i][j] == 1):
+                        chromosome[i][j] = 0
+                    else:
+                        chromosome[i][j] = 1
 
 
