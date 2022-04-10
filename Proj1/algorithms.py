@@ -1,4 +1,5 @@
 from formulation import *
+import numpy as np
 
 class Solution:
     def __init__(self, num_projs, num_collaborators):
@@ -115,7 +116,7 @@ class Solution:
     def T_schedule(self, T):
         return 0.90 * T
 
-    def genetic_algorithm(self, size_of_population):
+    def genetic_algorithm(self, size_of_population, parents_algorithm):
         ev = []
 
         population = self.create_initial_population(size_of_population)
@@ -124,7 +125,7 @@ class Solution:
         while it < 100:
             it += 1
 
-            population, current_best = self.generate_next_population(population)
+            population, current_best = self.generate_next_population(population, parents_algorithm)
 
             ev.append(current_best)
 
@@ -194,12 +195,27 @@ class Solution:
 
         return parent1, parent2 # index of the parents
 
-    def roulette_selection(fitness, population_size):
-        return 5, 6
+    def roulette_selection(self, fitness, population_size):
+
+        # Computes the totallity of the population fitness
+        population_fitness = sum(fitness)
+        
+        # Computes for each chromosome the probability 
+        chromosome_probabilities = [fitness[chromosome]/population_fitness for chromosome in range (population_size)]
+        
+        # Selects two elements of the fitness list based on the computed probabilities
+        fit1 = np.random.choice(fitness, p=chromosome_probabilities)
+        fit2 = np.random.choice(fitness, p=chromosome_probabilities)  
+
+        #finds the index of the parents
+        parent1 = fitness.index(fit1)
+        parent2 = fitness.index(fit2)
+
+        return parent1, parent2
 
 
-    #dar outro nome a crossover e criar outra funçao crossover para combinar os dois pais
-    def generate_next_population(self, population):
+    #criar outra funçao crossover para combinar os dois pais
+    def generate_next_population(self, population, parents_algorithm):
         total_population = len(population)
         new_population = []
 
@@ -221,7 +237,7 @@ class Solution:
                 new_population.append(parent)
             else:
                 #crossover between 2 parents
-                parent1, parent2 = self.select_parents(fitness, 1)  #mudar 2 argumento para input
+                parent1, parent2 = self.select_parents(fitness, parents_algorithm) 
                 child = population[parent1][:round(self.num_projs/2)] + population[parent2][round(self.num_projs/2):]
                 self.mutation(child)
                 new_population.append(child)

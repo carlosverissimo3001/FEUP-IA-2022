@@ -13,7 +13,12 @@ if __name__ == "__main__":
     sol2, annealing_evals = sol.simulated_annealing()
     print("Best value with simulated annealing was ", sol2)
 
-    sol3, genetic_evals = sol.genetic_algorithm(25)
+
+    size_of_pop = int(input("Input the desired population size: "))
+
+    parents_algorithm = int(input("Select one of the following algorithms to select the parents: 1)tournament selection  2)roulette_selection "))
+    
+    sol3, genetic_evals = sol.genetic_algorithm(size_of_pop, parents_algorithm)
     print("Best value with genetic algorithm was ", sol3)
 
 
