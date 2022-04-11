@@ -1,9 +1,11 @@
 from algorithms import *
-
+from utils import *
 
 if __name__ == "__main__":
 
-    sol = Solution(3, 3)
+    team = read_dataset("a")
+    
+    sol = Solution(team)
 
     print(sol.solution)
 

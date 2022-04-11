@@ -6,14 +6,85 @@ import copy
 import random
 from math import exp
 
-class Colaborator:
-    def __init__(self, skill, name) -> None:
+class Member:
+    def __init__(self, name) -> None:
         self.name = name
-        self.skill = skill
+        self.skills = []
+        self.on_project = False
+        self.working_on = -1
+
+    def toString(self):
+        string = self.name + " " + "\n"
+        for i in range(len(self.skills)):
+            string += self.skills[i].toString()
+
+        return string
+
+    def hasSkill(self, skill):
+        for i in range(len(self.skills)):
+            if(self.skills[i] == skill):
+                return True
+
+        return False
+
 
 class Project:
-    def __init__(self, duration, name, score, roles) -> None:
+    def __init__(self, name, duration, score, n_roles) -> None:
         self.name = name
         self.duration = duration
         self.score = score # score awarded for completing the project
-        self.roles = roles # list of roles for contributors working on the project 
+        self.roles = [] # list of skills for contributors working on the project
+        self.n_roles = n_roles
+        self.has_started = True
+
+    def toString(self):
+        string = self.name + " " + str(self.duration) + " " + str(self.score) + " " + str(self.n_roles) + "\n"
+        for i in range(len(self.roles)):
+            string += self.roles[i].toString()
+
+        return string
+
+    def check_requirements(self, team, num_project):
+        skills_matched = 0
+
+        #For each different role
+        for i in self.n_roles:
+            #For each member
+            for k in team.n_members:
+                # If the member has the necessary skills and is not asigned to a project yet
+                if team.members[k].hasSkill(self.n_roles[i]) and not team.members[k].on_project:
+                    team.members[k].on_project = True
+                    team.members[k].working_on = num_project                 
+                    skills_matched += 1
+                    break
+
+        return skills_matched == self.n_roles
+
+class Team:
+    def __init__(self, n_members, n_projects) -> None:
+        self.n_members = n_members
+        self.members = []
+        self.n_projects = n_projects
+        self.projects = []
+
+    def toString(self):
+        string = ""
+        for i in range(self.n_members):
+            string += self.members[i].toString()
+        
+        for i in range(self.n_projects):
+            string += self.projects[i].toString()
+
+        return string
+
+class Skill:
+    def __init__(self, name, level) -> None:
+        self.name = name
+        self.level = level
+
+    def __eq__(self, other):
+        return (self.name == other.name and self.level >= other.level)
+
+    def toString(self):
+        return self.name + " " + str(self.level) + "\n"
+

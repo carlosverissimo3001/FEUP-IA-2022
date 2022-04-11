@@ -2,34 +2,92 @@ from formulation import *
 import numpy as np
 
 class Solution:
-    def __init__(self, num_projs, num_collaborators):
-        self.num_collaborators = num_collaborators
-        self.num_projs = num_projs
+    def __init__(self, team):
+        self.team = team
         self.solution = []
-        for _ in range (num_projs):
-            self.solution.append([random.randint(0,1) for _ in range(num_collaborators)])
+        for _ in range (team.n_projects):
+            self.solution.append([random.randint(0,1) for _ in range(team.n_members)])
 
+    #(sum(solution[0]) + sum(solution[1]) + sum(solution[2])) 
     def evaluate(self, solution) -> int:
-        temp = ( sum(solution[0]) + sum(solution[1]) + sum(solution[2]) )
-        return temp
+        days = 0
+        score = 0
+        completed = 0
+        counters = []
 
+        for i in range(self.team.n_projects):
+            counters[i] = 0
+        """ 
+        While true:
+            For each project
+                Verify if a project didn't start
+                If the project has the requirements
+                    Start the project
+                    Lock the members
+                    Start a counter of days
+                    
+                Otherwise, if the project has started
+                    Verify if the counter has reached duration
+                        If so unlock the members
+                        Increment overall score
+                        Increment skill level of members                
+
+                When the number of days reaches a limit or all the projects are complete, terminate
+         """
+        #For each day
+        while True:
+            if completed == self.team.n_projects:
+                break
+
+            days += 1
+            
+            #For each project
+            for i in range(self.team.n_projects):
+                project = self.team.projects[i]
+                
+                #Check whether it started or not
+                if not project.has_started:
+                    project.has_started = project.check_requirements(self.team, i)
+                    counters[i] += 1
+                     
+                else:
+                    #If the project has ended
+                    if counters[i] == project.duration:
+                        score += project.score
+                        
+                        #Unlock each member
+                        #NEEDTO INCREMENT THE SKILL LEVEL
+                        for k in range(self.team.n_members):
+                            if self.team.members[k].working_on == i:
+                                self.team.members[k].working_on = -1
+                                self.team.members[k].on_project = False
+
+                        completed += 1
+                    
+                    #Otherwise, another day goes on
+                    else:
+                        counters[i] += 1
+
+
+        return days
+        
     def neighbour1(self, solution):
         """Change the value of one slot"""
-        proj = random.randrange(self.num_projs)
-        collab = random.randrange(self.num_collaborators)
+        proj = random.randrange(self.team.n_projects)
+        collab = random.randrange(self.team.n_members)
 
         if solution[proj][collab] == 1:
             solution[proj][collab] = 0
         else:
             solution[proj][collab] = 1
-        
+       
         return solution
 
 
     def neighbour2(self, solution):
         """Exchange the slots of two slots"""
-        size = self.num_projs
-        collabs_num = self.num_collaborators
+        size = self.team.n_projects
+        collabs_num = self.team.n_members
 
         proj1 = random.randrange(size)
         proj2 = random.randrange(size)
@@ -146,14 +204,14 @@ class Solution:
         population = []
 
         for i in range(size):
-            #population.append([random.randint(0,1) for _ in range(self.num_projs * self.num_collaborators)])
+            #population.append([random.randint(0,1) for _ in range(self.team.n_projects * self.team.n_members)])
             temp = []
-            for _ in range (self.num_projs):
-                temp.append([random.randint(0,1) for _ in range(self.num_collaborators)])
+            for _ in range (self.team.n_projects):
+                temp.append([random.randint(0,1) for _ in range(self.team.n_members)])
             population.append(temp)
         
             #population.append([])
-            #for j in range(self.num_collaborators * self.num_projs): # n chromossomes for each project
+            #for j in range(self.team.n_members * self.team.n_projects): # n chromossomes for each project
             #    population[i].append(random.randint(0,1))
         
         return population
@@ -238,7 +296,7 @@ class Solution:
             else:
                 #crossover between 2 parents
                 parent1, parent2 = self.select_parents(fitness, parents_algorithm) 
-                child = population[parent1][:round(self.num_projs/2)] + population[parent2][round(self.num_projs/2):]
+                child = population[parent1][:round(self.team.n_projects/2)] + population[parent2][round(self.team.n_projects/2):]
                 self.mutation(child)
                 new_population.append(child)
 
@@ -255,5 +313,4 @@ class Solution:
                         chromosome[i][j] = 0
                     else:
                         chromosome[i][j] = 1
-
 
