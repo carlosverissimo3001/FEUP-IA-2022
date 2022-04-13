@@ -22,7 +22,7 @@ class Member:
 
     def hasSkill(self, skill):
         for i in range(len(self.skills)):
-            if(self.skills[i] == skill):
+            if(self.skills[i].name == skill.name and self.skills[i].level >= skill.level):
                 return True
 
         return False
@@ -35,7 +35,8 @@ class Project:
         self.score = score # score awarded for completing the project
         self.roles = [] # list of skills for contributors working on the project
         self.n_roles = n_roles
-        self.has_started = True
+        self.has_started = False
+        self.is_over = False
 
     def toString(self):
         string = self.name + " " + str(self.duration) + " " + str(self.score) + " " + str(self.n_roles) + "\n"
@@ -44,17 +45,22 @@ class Project:
 
         return string
 
-    def check_requirements(self, team, num_project):
+    def check_requirements(self, team, num_project, members):
         skills_matched = 0
 
+        #If there are more roles than people
+        if self.n_roles > len(members):
+            return False
+
         #For each different role
-        for i in self.n_roles:
-            #For each member
-            for k in team.n_members:
-                # If the member has the necessary skills and is not asigned to a project yet
-                if team.members[k].hasSkill(self.n_roles[i]) and not team.members[k].on_project:
+        for i in range(self.n_roles):
+            # For each member
+            # When finding a member with the given skill, it breaks the for loop to prevent
+            # looking for another member with the same skill
+            for k in range (len(members)):
+                if members[k] == 1 and team.members[k].hasSkill(self.roles[i]) and not team.members[k].on_project:
                     team.members[k].on_project = True
-                    team.members[k].working_on = num_project                 
+                    team.members[k].working_on = num_project
                     skills_matched += 1
                     break
 
@@ -71,7 +77,7 @@ class Team:
         string = ""
         for i in range(self.n_members):
             string += self.members[i].toString()
-        
+
         for i in range(self.n_projects):
             string += self.projects[i].toString()
 
@@ -82,8 +88,8 @@ class Skill:
         self.name = name
         self.level = level
 
-    def __eq__(self, other):
-        return (self.name == other.name and self.level >= other.level)
+    """ def __eq__(self, other):
+        return (self.name == other.name and self.level >= other.level) """
 
     def toString(self):
         return self.name + " " + str(self.level) + "\n"

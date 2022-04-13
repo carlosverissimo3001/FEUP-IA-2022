@@ -4,7 +4,8 @@ from utils import *
 if __name__ == "__main__":
 
     team = read_dataset("a")
-    
+    print (team.toString())
+
     sol = Solution(team)
 
     print(sol.solution)
@@ -19,7 +20,7 @@ if __name__ == "__main__":
     size_of_pop = int(input("Input the desired population size: "))
 
     parents_algorithm = int(input("Select one of the following algorithms to select the parents: 1)tournament selection  2)roulette_selection "))
-    
+
     sol3, genetic_evals = sol.genetic_algorithm(size_of_pop, parents_algorithm)
     print("Best value with genetic algorithm was ", sol3)
 
@@ -38,4 +39,4 @@ if __name__ == "__main__":
 
     plt.show()
 
-    
+
