@@ -197,29 +197,30 @@ class Solution:
         return 3
 
     def tabu_search(self):
-        solution = self.solution.copy()
         tabu_list = []
         counters = []
-        best_sol = []
         ev = []
         iteration = 0
 
-        neighbour = self.neighbour3(solution.copy())
+        solution = self.solution.copy()
+        neighbour = self.neighbour3(copy.deepcopy(solution))
         best_sol = neighbour
         ev.append(self.evaluate(best_sol))
 
 
-        while iteration < 20:
+        while iteration < 100:
             iteration += 1
-            neighbour = self.neighbour3(neighbour.copy())
+            neighbour = self.neighbour3(copy.deepcopy(neighbour))
             evaluation = self.evaluate(neighbour)
             ev.append(evaluation)
             print(neighbour, evaluation)
 
             if neighbour not in tabu_list:
                 tabu_list.append(neighbour)
+                #print(len(tabu_list))
                 counters.append([neighbour.copy(), self.tabu_tenure()])
                 if evaluation > self.evaluate(best_sol):
+                    print("Neighbour: " + str(evaluation) + " Best solution: " + str(self.evaluate(best_sol)))
                     best_sol = neighbour
 
             else:
