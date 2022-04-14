@@ -9,9 +9,9 @@ class Solution:
             #self.solution.append([random.randint(0,1) for _ in range(team.n_members)])
             self.solution.append([0 for _ in range(team.n_members)])
 
-    #(sum(solution[0]) + sum(solution[1]) + sum(solution[2]))
     def evaluate(self, solution) -> int:
-        days = 0
+        return (sum(solution[0]) + sum(solution[1]) + sum(solution[2]) + sum(solution[3]))
+        """ days = 0
         score = 0
         completed = 0
         counters = []
@@ -65,7 +65,7 @@ class Solution:
             if not started:
                 return -1
 
-        return days
+        return days """
 
     def neighbour1(self, solution):
         """Change the value of one slot"""
@@ -78,7 +78,6 @@ class Solution:
             solution[proj][collab] = 1
 
         return solution
-
 
     def neighbour2(self, solution):
         """Exchange the slots of two slots"""
@@ -194,6 +193,42 @@ class Solution:
 
         return all_time_best, ev
 
+    def tabu_tenure(self):
+        return 3
+
+    def tabu_search(self):
+        solution = self.solution.copy()
+        tabu_list = []
+        counters = []
+        best_sol = []
+        ev = []
+        iteration = 0
+
+        neighbour = self.neighbour3(solution.copy())
+        best_sol = neighbour
+        ev.append(self.evaluate(best_sol))
+
+
+        while iteration < 20:
+            iteration += 1
+            neighbour = self.neighbour3(neighbour.copy())
+            evaluation = self.evaluate(neighbour)
+            ev.append(evaluation)
+            print(neighbour, evaluation)
+
+            if neighbour not in tabu_list:
+                tabu_list.append(neighbour)
+                counters.append([neighbour.copy(), self.tabu_tenure()])
+                if evaluation > self.evaluate(best_sol):
+                    best_sol = neighbour
+
+            else:
+                for k in range(len(counters)):
+                    counters[k][1] -= 1
+                    if counters[k][1] == 0:
+                        tabu_list.remove(counters[k][0])
+
+        return best_sol, ev
 
 
     def create_initial_population(self, size):
