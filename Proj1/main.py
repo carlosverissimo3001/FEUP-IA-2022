@@ -6,9 +6,8 @@ if __name__ == "__main__":
     team = read_dataset("a")
 
     sol = Solution(team)
-    print(team.toString())
 
-    print(sol.solution)
+    print("Random solution: ", sol.solution)
 
     sol1, hill_evals = sol.hill_climbing()
     print("Best value with hill climbing was ", sol1)

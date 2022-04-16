@@ -20,6 +20,10 @@ class Member:
 
         return string
 
+    def reset(self):
+        self.on_project = False
+        self.working_on = -1
+
     def hasSkill(self, role):
         for skill in self.skills:
             if skill == role:
@@ -45,44 +49,37 @@ class Project:
 
         return string
 
-    def check_requirements(self, team, num_project, member_is_chosen):
+    def reset(self):
+        self.has_started = False
+        self.is_over = False
+
+    def check_requirements(self, num_project, solution_members):
         assigned_members = []
-        skills_matched = 0
+        roles_matched = 0
 
         #If there are more roles than people, break
-        if self.n_roles > len(member_is_chosen):
-            return False
+        """ if self.n_roles != len(solution_members):
+            return -self.score/2 """
 
         #For each different role
         for i in range(self.n_roles):
-            # For each member
-            # When finding a member with the given skill, it breaks the for loop to prevent
-            # looking for another member with the same skill
             k = 0
-            for member in team.members:
-                if member_is_chosen[k] and member.hasSkill(self.roles[i]) and not member.on_project:
-                    skills_matched += 1
+            for member in solution_members:
+                if member.hasSkill(self.roles[i]) and not member.on_project:
+                    roles_matched += 1
                     assigned_members.append(member)
-                    #print("Has: " + member.toString())
                     break
 
                 k += 1
 
-        #print("Matched: ", skills_matched)
-        #print("Needed skills: ", self.n_roles)
-        #print("-----------------------------")
-
-        #If all the requirements match start the project
-        if skills_matched == self.n_roles:
+        #If all the requirements match start the project, lock the matched members
+        if roles_matched == self.n_roles:
             self.has_started = True
-            # Assign the members to it
             for member in assigned_members:
                 member.on_project = True
                 member.working_on = num_project
-
-            return True
         
-        return False
+        return -(self.n_roles - roles_matched) * 10
 
 class Team:
     def __init__(self, n_members, n_projects) -> None:
@@ -100,6 +97,13 @@ class Team:
             string += self.projects[i].toString()
 
         return string
+
+    def reset(self):
+        for member in self.members:
+            member.reset()
+
+        for project in self.projects:
+            project.reset()
 
 class Skill:
     def __init__(self, name, level) -> None:

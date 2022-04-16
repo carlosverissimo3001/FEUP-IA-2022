@@ -1,6 +1,6 @@
 4 4
 Anna 1
-C++ 2
+C++ 3
 Bob 2
 HTML 5
 CSS 5
@@ -8,13 +8,13 @@ Maria 1
 Python 3
 Carlos 1
 sql 10
-Logging 5 10 1
+Project1 5 10 1
 C++ 3
-WebServer 7 10 2
+Project2 7 10 2
 HTML 3
 C++ 2
-WebChat 10 20 2
+Project3 10 20 2
 Python 3
 HTML 3
-WebCam 20 10 1
+Project4 20 10 1
 sql 10

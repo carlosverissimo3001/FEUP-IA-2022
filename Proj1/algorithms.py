@@ -10,12 +10,13 @@ class Solution:
             self.solution.append([0 for _ in range(team.n_members)])
 
     def evaluate(self, solution) -> int:
+        print("NEIGHBOUR: ", solution)
         #return (sum(solution[0]) + sum(solution[1]) + sum(solution[2]) + sum(solution[3]))
-        project_counter = []
-
+        
+        project_timer = []
         #Initialization
         for i in range(len(solution)):
-            project_counter.append(0)
+            project_timer.append(0)
 
         days = 0                # Number of days passed 
         score = 0               # Score of the completed projects
@@ -23,59 +24,64 @@ class Solution:
         completed_projects = 0  # Number of completed projects
         unfinished_projects = 0 # Number of unfinished projects
         started_projects = 0    # Number of started projects
-
+        solution_members = []   # Members that were chosen to test a given project requirements
+        penalties = 0           # Score penalties
+        
+        i = 0         
         while True:
-            days += 1
             delta += 1
+            days += 1
 
-            i = 0                
-            #Attempt to start projects if the projects weren't done yet
-            for project in self.team.projects:
+            for i in range(self.team.n_projects):
+                project = self.team.projects[i]
+                solution_members.clear()
+
                 if project.is_over:
                     continue
+                
+                for k in range(len(solution[i])):
+                    if solution[i][k]:
+                        solution_members.append(self.team.members[k])
 
                 # Check if the project meets the requirements to start
-                elif not project.has_started:
-                    project.check_requirements(self.team, i, solution[i])
+                if not project.has_started:
+                    #print(project.name, "has not started yet.")
+                    penalties += project.check_requirements(i, solution_members)
                     if project.has_started:
-                        print(project.name, " has started!")
-                        project_counter[i] += 1
+                        print(project.name, "has started!")
+                        #print("-------------------------\n")
+                        project_timer[i] += 1
                         started_projects += 1
                         unfinished_projects += 1
                         delta = 0
 
-                # If the project has started increment the counter
+                # If the project has started start the timers
                 else:
-                    project_counter[i] += 1
-                    # If the duration of the project has passed
-                    if project_counter[i] == project.duration:
+                    project_timer[i] += 1
+                    # If the project's duration is over
+                    if project_timer[i] == project.duration:
                         project.is_over = True
                         project.has_started = False
                         score += project.score
                         unfinished_projects -= 1
                         completed_projects += 1
 
-                        #Unlock all the staff required
-                        for member in self.team.members:
+                        #Unlocking members
+                        for member in solution_members:
                             if member.working_on == i:
-                                member.on_project = False
-                                member.working_on = -1
-
-                i += 1
-
-            # If there are no started projects
-            if days == 1 and not started_projects:
-                return -1
-
-            # If all projects were completed
-            elif completed_projects == self.team.n_projects:
+                                member.reset()
+            
+            # If all projects get completed
+            if completed_projects == self.team.n_projects:
                 break
             
-            # If no more projects can be started
+            # In case a new project doesn't start in a few days, stop
             elif delta > 5 and not unfinished_projects:
                 break
-
-        return score/days
+        
+        self.team.reset()
+        #print("Score: ", score, " Days: ", days, "Penalties:", penalties, "Total:", 1000 + score/days + penalties)
+        return 1000 - score/days + penalties
 
     def neighbour1(self, solution):
         """Change the value of one slot"""
@@ -223,14 +229,11 @@ class Solution:
             neighbour = self.neighbour3(copy.deepcopy(neighbour))
             evaluation = self.evaluate(neighbour)
             ev.append(evaluation)
-            print(neighbour, evaluation)
 
             if neighbour not in tabu_list:
                 tabu_list.append(neighbour)
-                #print(len(tabu_list))
                 counters.append([neighbour.copy(), self.tabu_tenure()])
                 if evaluation > self.evaluate(best_sol):
-                    print("Neighbour: " + str(evaluation) + " Best solution: " + str(self.evaluate(best_sol)))
                     best_sol = neighbour
 
             else:
