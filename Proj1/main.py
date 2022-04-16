@@ -6,6 +6,7 @@ if __name__ == "__main__":
     team = read_dataset("a")
 
     sol = Solution(team)
+    print(team.toString())
 
     print(sol.solution)
 

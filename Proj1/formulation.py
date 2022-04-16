@@ -20,9 +20,9 @@ class Member:
 
         return string
 
-    def hasSkill(self, skill):
-        for i in range(len(self.skills)):
-            if(self.skills[i].name == skill.name and self.skills[i].level >= skill.level):
+    def hasSkill(self, role):
+        for skill in self.skills:
+            if skill == role:
                 return True
 
         return False
@@ -53,17 +53,27 @@ class Project:
             return False
 
         #For each different role
+
         for i in range(self.n_roles):
             # For each member
             # When finding a member with the given skill, it breaks the for loop to prevent
             # looking for another member with the same skill
-            for k in range (len(members)):
-                if members[k] == 1 and team.members[k].hasSkill(self.roles[i]) and not team.members[k].on_project:
-                    team.members[k].on_project = True
-                    team.members[k].working_on = num_project
+            k = 0
+            for member in team.members:
+                if members[k] == 1 and member.hasSkill(self.roles[i]) and not member.on_project:
+                    print(self.toString())
+                    print("Has: " + team.members[k].toString())
+
+                    member.on_project = True
+                    member.working_on = num_project
                     skills_matched += 1
                     break
 
+                k += 1
+        if skills_matched != 0:
+            print("Matched: " + str(skills_matched))
+            print("Needed: " + str(self.n_roles))
+            print("-------------------------------")
         return skills_matched == self.n_roles
 
 class Team:
@@ -88,8 +98,8 @@ class Skill:
         self.name = name
         self.level = level
 
-    """ def __eq__(self, other):
-        return (self.name == other.name and self.level >= other.level) """
+    def __eq__(self, other):
+        return (self.name == other.name and self.level >= other.level)
 
     def toString(self):
         return self.name + " " + str(self.level) + "\n"

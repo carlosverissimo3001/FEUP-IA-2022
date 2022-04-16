@@ -10,62 +10,19 @@ class Solution:
             self.solution.append([0 for _ in range(team.n_members)])
 
     def evaluate(self, solution) -> int:
-        return (sum(solution[0]) + sum(solution[1]) + sum(solution[2]) + sum(solution[3]))
-        """ days = 0
+        #return (sum(solution[0]) + sum(solution[1]) + sum(solution[2]) + sum(solution[3]))
+        days = 0
         score = 0
         completed = 0
         counters = []
         started = 0
+        i = 0
 
-        no_projects = len(solution)
-        no_members = len(solution[0])
+        for project in self.team.projects:
+            project.has_started = project.check_requirements(self.team, i, solution[i])
+            i += 1
 
-        for i in range(no_projects):
-            counters.append(0)
-
-        #For each day
-        while True:
-            # If on the iteration 1, no project has started, break out of the loop
-            if completed == no_projects:
-                break
-
-            days += 1
-
-            #For each project
-            for i in range(no_projects):
-                project = self.team.projects[i]
-
-                #Check whether it started or not
-                if not project.has_started and not project.is_over:
-                    project.has_started = project.check_requirements(self.team, i, solution[i])
-                    if project.has_started:
-                        print("Project " + str(i) + " has started!")
-                        counters[i] += 1
-                        started += 1
-
-                else:
-                    #If the project has ended
-                    if counters[i] == project.duration:
-                        score += project.score
-                        completed += 1
-                        project.is_over = True
-
-                        #Unlock each member
-                        #NEEDTO INCREMENT THE SKILL LEVEL
-                        for k in range(no_members):
-                            if self.team.members[k].working_on == i:
-                                self.team.members[k].working_on = -1
-                                self.team.members[k].on_project = False
-                                #self.team.members[k].skills
-
-                    #Otherwise, another day goes on
-                    else:
-                        counters[i] += 1
-
-            if not started:
-                return -1
-
-        return days """
+        return days
 
     def neighbour1(self, solution):
         """Change the value of one slot"""
