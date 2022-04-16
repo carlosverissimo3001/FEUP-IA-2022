@@ -45,36 +45,44 @@ class Project:
 
         return string
 
-    def check_requirements(self, team, num_project, members):
+    def check_requirements(self, team, num_project, member_is_chosen):
+        assigned_members = []
         skills_matched = 0
 
-        #If there are more roles than people
-        if self.n_roles > len(members):
+        #If there are more roles than people, break
+        if self.n_roles > len(member_is_chosen):
             return False
 
         #For each different role
-
         for i in range(self.n_roles):
             # For each member
             # When finding a member with the given skill, it breaks the for loop to prevent
             # looking for another member with the same skill
             k = 0
             for member in team.members:
-                if members[k] == 1 and member.hasSkill(self.roles[i]) and not member.on_project:
-                    print(self.toString())
-                    print("Has: " + team.members[k].toString())
-
-                    member.on_project = True
-                    member.working_on = num_project
+                if member_is_chosen[k] and member.hasSkill(self.roles[i]) and not member.on_project:
                     skills_matched += 1
+                    assigned_members.append(member)
+                    #print("Has: " + member.toString())
                     break
 
                 k += 1
-        if skills_matched != 0:
-            print("Matched: " + str(skills_matched))
-            print("Needed: " + str(self.n_roles))
-            print("-------------------------------")
-        return skills_matched == self.n_roles
+
+        #print("Matched: ", skills_matched)
+        #print("Needed skills: ", self.n_roles)
+        #print("-----------------------------")
+
+        #If all the requirements match start the project
+        if skills_matched == self.n_roles:
+            self.has_started = True
+            # Assign the members to it
+            for member in assigned_members:
+                member.on_project = True
+                member.working_on = num_project
+
+            return True
+        
+        return False
 
 class Team:
     def __init__(self, n_members, n_projects) -> None:

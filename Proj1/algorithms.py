@@ -11,18 +11,71 @@ class Solution:
 
     def evaluate(self, solution) -> int:
         #return (sum(solution[0]) + sum(solution[1]) + sum(solution[2]) + sum(solution[3]))
-        days = 0
-        score = 0
-        completed = 0
-        counters = []
-        started = 0
-        i = 0
+        project_counter = []
 
-        for project in self.team.projects:
-            project.has_started = project.check_requirements(self.team, i, solution[i])
-            i += 1
+        #Initialization
+        for i in range(len(solution)):
+            project_counter.append(0)
 
-        return days
+        days = 0                # Number of days passed 
+        score = 0               # Score of the completed projects
+        delta = 0               # Time passed without a project starting
+        completed_projects = 0  # Number of completed projects
+        unfinished_projects = 0 # Number of unfinished projects
+        started_projects = 0    # Number of started projects
+
+        while True:
+            days += 1
+            delta += 1
+
+            i = 0                
+            #Attempt to start projects if the projects weren't done yet
+            for project in self.team.projects:
+                if project.is_over:
+                    continue
+
+                # Check if the project meets the requirements to start
+                elif not project.has_started:
+                    project.check_requirements(self.team, i, solution[i])
+                    if project.has_started:
+                        print(project.name, " has started!")
+                        project_counter[i] += 1
+                        started_projects += 1
+                        unfinished_projects += 1
+                        delta = 0
+
+                # If the project has started increment the counter
+                else:
+                    project_counter[i] += 1
+                    # If the duration of the project has passed
+                    if project_counter[i] == project.duration:
+                        project.is_over = True
+                        project.has_started = False
+                        score += project.score
+                        unfinished_projects -= 1
+                        completed_projects += 1
+
+                        #Unlock all the staff required
+                        for member in self.team.members:
+                            if member.working_on == i:
+                                member.on_project = False
+                                member.working_on = -1
+
+                i += 1
+
+            # If there are no started projects
+            if days == 1 and not started_projects:
+                return -1
+
+            # If all projects were completed
+            elif completed_projects == self.team.n_projects:
+                break
+            
+            # If no more projects can be started
+            elif delta > 5 and not unfinished_projects:
+                break
+
+        return score/days
 
     def neighbour1(self, solution):
         """Change the value of one slot"""
