@@ -58,4 +58,15 @@ if __name__ == "__main__":
 
     plt.show()
 
+    solutions = [sol.evaluate(sol1), sol.evaluate(sol2), sol.evaluate(sol3), sol.evaluate(sol4)]
+
+    labels = ['H.C.', 'S.A.', 'G.A.', 'T.S.']
+
+    plt.bar(labels, solutions)
+
+    plt.xlabel('algorithms')
+
+    plt.ylabel('best evaluation')
+
+    plt.show()
 
