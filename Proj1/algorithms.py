@@ -11,7 +11,7 @@ class Solution:
 
     def evaluate(self, solution) -> int:
         print("NEIGHBOUR: ", solution)
-        return (sum(solution[0]) + sum(solution[1]) + sum(solution[2]) + sum(solution[3]))
+        #return (sum(solution[0]) + sum(solution[1]) + sum(solution[2]) + sum(solution[3]))
         
         project_timer = []
         #Initialization
