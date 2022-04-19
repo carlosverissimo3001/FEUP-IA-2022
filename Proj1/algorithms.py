@@ -6,11 +6,11 @@ class Solution:
         self.team = team
         self.solution = []
         for _ in range (team.n_projects):
-            #self.solution.append([random.randint(0,1) for _ in range(team.n_members)])
-            self.solution.append([0 for _ in range(team.n_members)])
+            self.solution.append([random.randint(0,1) for _ in range(team.n_members)])
+            #self.solution.append([0 for _ in range(team.n_members)])
 
     def evaluate(self, solution) -> int:
-        print("NEIGHBOUR: ", solution)
+        #print("NEIGHBOUR: ", solution)
         #return (sum(solution[0]) + sum(solution[1]) + sum(solution[2]) + sum(solution[3]))
         
         project_timer = []
@@ -48,7 +48,7 @@ class Solution:
                     #print(project.name, "has not started yet.")
                     penalties += project.check_requirements(i, solution_members)
                     if project.has_started:
-                        print(project.name, "has started!")
+                        #print(project.name, "has started!")
                         #print("-------------------------\n")
                         project_timer[i] += 1
                         started_projects += 1
@@ -185,29 +185,6 @@ class Solution:
     def T_schedule(self, T):
         return 0.90 * T
 
-    def genetic_algorithm(self, size_of_population, parents_algorithm):
-        ev = []
-
-        population = self.create_initial_population(size_of_population)
-
-        it = 0
-        while it < 100:
-            it += 1
-
-            population, current_best = self.generate_next_population(population, parents_algorithm)
-
-            ev.append(current_best)
-
-        #check the best of the final solution
-        fitness = self.evaluate_fitness(population)
-
-        top_fit = max(fitness)  # value of the fittest element
-        index = fitness.index(top_fit) # most fit element index
-        all_time_best = population[index]   # actual element
-
-        ev.append(top_fit)
-
-        return all_time_best, ev
 
     def tabu_tenure(self):
         return 3
@@ -244,6 +221,30 @@ class Solution:
 
         return best_sol, ev
 
+
+    def genetic_algorithm(self, size_of_population, parents_algorithm, crossover_algortithm):
+        ev = []
+
+        population = self.create_initial_population(size_of_population)
+
+        it = 0
+        while it < 100:
+            it += 1
+
+            population, current_best = self.generate_next_population(population, parents_algorithm, crossover_algortithm)
+
+            ev.append(current_best)
+
+        #check the best of the final solution
+        fitness = self.evaluate_fitness(population)
+
+        top_fit = max(fitness)  # value of the fittest element
+        index = fitness.index(top_fit) # most fit element index
+        all_time_best = population[index]   # actual element
+
+        ev.append(top_fit)
+
+        return all_time_best, ev
 
     def create_initial_population(self, size):
         population = []
@@ -318,7 +319,7 @@ class Solution:
 
 
     #criar outra funçao crossover para combinar os dois pais
-    def generate_next_population(self, population, parents_algorithm):
+    def generate_next_population(self, population, parents_algorithm, crossover_algorithm):
         total_population = len(population)
         new_population = []
 
@@ -341,13 +342,34 @@ class Solution:
             else:
                 #crossover between 2 parents
                 parent1, parent2 = self.select_parents(fitness, parents_algorithm)
-                child = population[parent1][:round(self.team.n_projects/2)] + population[parent2][round(self.team.n_projects/2):]
+                # child = population[parent1][:round(self.team.n_projects/2)] + population[parent2][round(self.team.n_projects/2):]
+                child = self.select_crossover(population[parent1], population[parent2], crossover_algorithm)
                 self.mutation(child)
                 new_population.append(child)
 
 
         return new_population, top_fit
 
+    def select_crossover(self, parent1, parent2, choice):
+        if choice == 1:
+            return self.crossover1(parent1, parent2)
+        elif choice == 2:
+            return self.crossover2(parent1, parent2)
+        else:
+            return self.crossover3(parent1, parent2)
+
+
+    def crossover1(self, parent1, parent2):
+        return parent1[:round(self.team.n_projects/2)] + parent2[round(self.team.n_projects/2):]
+
+    def crossover2(self, parent1, parent2):
+        return parent2[:round(self.team.n_projects/2)] + parent1[round(self.team.n_projects/2):]
+
+    def crossover3(self, parent1, parent2):
+        if random.choice([True, False]):
+            return self.crossover1(parent1, parent2)
+        else:
+            return self.crossover2(parent1, parent2)
 
     def mutation(self, chromosome):
         percentage = 0.05
