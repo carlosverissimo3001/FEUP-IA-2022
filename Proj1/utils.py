@@ -2,7 +2,7 @@ from formulation import *
 
 def read_dataset(filename):
   
-  f = open(filename + ".txt", 'r')
+  f = open("input/" + filename + ".txt", 'r')
   line = f.readline()
   tokens = line.split()
   team = Team(int(tokens.pop(0)), int(tokens.pop(0)))
@@ -26,6 +26,8 @@ def read_dataset(filename):
   for i in range(team.n_projects):
     line = f.readline()
     tokens = line.split()
+    trash = tokens.pop(3)
+    
     project = Project(tokens.pop(0), int(tokens.pop(0)), int(tokens.pop(0)), int(tokens.pop(0)))
 
     for k in range (project.n_roles):
@@ -37,4 +39,3 @@ def read_dataset(filename):
     team.projects.append(project)
 
   return team
-
