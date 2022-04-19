@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     plt.xlabel('iteration')
 
-    plt.ylabel('cost')
+    plt.ylabel('evaluation')
 
     plt.legend()
 
