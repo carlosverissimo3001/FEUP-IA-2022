@@ -9,18 +9,25 @@ def print_menu():
     print("*                                                                              *")
     print("*  1. Input file's letter without extension( from 'a' to 'f').                 *") 
     print("*  2. Choose the size of the population to be used in the genetic algorithm.   *") 
-    print("*  3. Pick between Tournament and Roulette Selection.                          *") 
+    print("*  3. Pick between Tournament and Roulette Selection.                          *")
+    print("*  4. Pick the crossover function                                              *") 
     print("*                                                                              *")
     print("*                                                                              *")
     print("********************************************************************************")
 
 if __name__ == "__main__":
 
-    team = read_dataset("a")
 
-    sol = Solution(team)
 
     print_menu()
+    filename = input("File name: ")
+    
+    team = read_dataset(filename)
+    sol = Solution(team)
+
+    size_of_pop = int(input("Input the desired population size: "))
+    parents_algorithm = int(input("Select one of the following algorithms to select the parents: \n1) tournament selection \n2) roulette_selection\n"))
+    crossover_algorithm = int(input("Select one of the following algorithms to select the crossover function: \n1)First half of parent 1 and second half of parent 2 \n2)First half of parent 2 and second half of parent 1 \n3)Randomly choose between 1) and 2)\n"))
 
     print("Random solution: ", sol.solution)
 
@@ -29,13 +36,6 @@ if __name__ == "__main__":
 
     sol2, annealing_evals = sol.simulated_annealing()
     print("Best value with simulated annealing was ", sol2)
-
-
-    size_of_pop = int(input("Input the desired population size: "))
-
-    parents_algorithm = int(input("Select one of the following algorithms to select the parents: \n1) tournament selection \n2) roulette_selection\n"))
-
-    crossover_algorithm = int(input("Select one of the following algorithms to select the crossover function: \n1)First half of parent 1 and second half of parent 2 \n2)First half of parent 2 and second half of parent 1 \n3)Randomly choose between 1) and 2)\n"))
 
     sol3, genetic_evals = sol.genetic_algorithm(size_of_pop, parents_algorithm, crossover_algorithm)
     print("Best value with genetic algorithm was ", sol3)
