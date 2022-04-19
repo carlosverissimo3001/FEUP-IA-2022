@@ -11,7 +11,7 @@ class Solution:
 
     def evaluate(self, solution) -> int:
         print("NEIGHBOUR: ", solution)
-        #return (sum(solution[0]) + sum(solution[1]) + sum(solution[2]) + sum(solution[3]))
+        return (sum(solution[0]) + sum(solution[1]) + sum(solution[2]) + sum(solution[3]))
         
         project_timer = []
         #Initialization
@@ -81,7 +81,7 @@ class Solution:
         
         self.team.reset()
         #print("Score: ", score, " Days: ", days, "Penalties:", penalties, "Total:", 1000 + score/days + penalties)
-        return 1000 - score/days + penalties
+        return score/days 
 
     def neighbour1(self, solution):
         """Change the value of one slot"""
