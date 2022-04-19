@@ -1,11 +1,26 @@
 from algorithms import *
 from utils import *
 
+def print_menu():
+    print("********************************************************************************")
+    print("*                                                                              *")
+    print("*                                                                              *")
+    print("*                                 INSTRUCTIONS                                 *")
+    print("*                                                                              *")
+    print("*  1. Input file's letter without extension( from 'a' to 'f').                 *") 
+    print("*  2. Choose the size of the population to be used in the genetic algorithm.   *") 
+    print("*  3. Pick between Tournament and Roulette Selection.                          *") 
+    print("*                                                                              *")
+    print("*                                                                              *")
+    print("********************************************************************************")
+
 if __name__ == "__main__":
 
     team = read_dataset("a")
 
     sol = Solution(team)
+
+    print_menu()
 
     print("Random solution: ", sol.solution)
 
