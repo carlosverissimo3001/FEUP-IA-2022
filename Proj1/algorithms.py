@@ -9,7 +9,7 @@ class Solution:
             self.solution.append([random.randint(0,1) for _ in range(team.n_members)])
             #self.solution.append([0 for _ in range(team.n_members)])
 
-    def evaluate(self, solution) -> int:
+    def evaluate(self, solution):
         #print("NEIGHBOUR: ", solution)
         #return (sum(solution[0]) + sum(solution[1]) + sum(solution[2]) + sum(solution[3]))
         
@@ -144,17 +144,18 @@ class Solution:
             evaluation = self.evaluate(neighbour)
 
             if evaluation > self.evaluate(solution):
-                ev.append(evaluation)
                 solution = neighbour
-                it = 0
+                #it = 0
                 if evaluation > best_sol_eval:
                     #all time best
                     best_sol = neighbour
                     best_sol_eval = evaluation
 
+            ev.append(self.evaluate(solution))
+
         return best_sol, ev
 
-    def simulated_annealing(self):
+    def simulated_annealing(self, cooling_algorithm):
         ev = []
 
         best_sol = []
@@ -162,28 +163,41 @@ class Solution:
 
         solution = self.solution.copy()
         it = 0
-        T = 1000
+        T0 = 50
 
         while it < 100:
-            it += 1
 
-            T = self.T_schedule(T)
+            T = self.T_schedule(T0, it, cooling_algorithm)
             neighbour = self.neighbour3(copy.deepcopy(solution))
             evaluation = self.evaluate(neighbour)
-            delta = evaluation - self.evaluate(solution)
+            delta = float(evaluation - self.evaluate(solution))
 
-            if delta > 0 or exp(delta / T) > random.random():
-                ev.append(evaluation)
+            #print(delta / T, 'and', T, 'and', delta)
+
+            it += 1
+            
+            if delta > 0 or random.random() < exp(delta / T):
                 solution = neighbour
                 if evaluation > best_sol_eval:
                     #all time best
                     best_sol = neighbour
                     best_sol_eval = evaluation
 
+            ev.append(self.evaluate(solution))
+
         return best_sol, ev
 
-    def T_schedule(self, T):
-        return 0.90 * T
+    def T_schedule(self, T0, it, cooling_option):
+        if(cooling_option == 1):
+            return T0 * 0.80 ** it
+        elif(cooling_option == 2):
+            return T0 / (1 + 2 * math.log(1 + it))
+        elif(cooling_option == 3):
+            return T0 / (1 + 1 * it) 
+        else:
+            return T0 / (1 + 0.5 * it ** 2) 
+        
+
 
 
     def tabu_tenure(self):

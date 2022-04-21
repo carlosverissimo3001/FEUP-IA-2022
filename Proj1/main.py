@@ -7,10 +7,11 @@ def print_menu():
     print("*                                                                              *")
     print("*                                 INSTRUCTIONS                                 *")
     print("*                                                                              *")
-    print("*  1. Input file's letter without extension( from 'a' to 'f').                 *")
-    print("*  2. Choose the size of the population to be used in the genetic algorithm.   *")
-    print("*  3. Pick between Tournament and Roulette Selection.                          *")
-    print("*  4. Pick the crossover function                                              *")
+    print("*  1. Input file's letter without extension( from 'a' to 'c').                 *")
+    print("*  2. Choose the cooling algorithm for Simulated Annealing.                    *")
+    print("*  3. Choose the size of the population to be used in the genetic algorithm.   *")
+    print("*  4. Pick between Tournament and Roulette Selection.                          *")
+    print("*  5. Pick the crossover function                                              *")
     print("*                                                                              *")
     print("*                                                                              *")
     print("********************************************************************************")
@@ -25,6 +26,8 @@ if __name__ == "__main__":
     team = read_dataset(filename)
     sol = Solution(team)
 
+    cooling_algorithm = int(input("Select one of the following cooling algorithms: \n1) Exponential multiplicative \n2) Logarithmical multiplicative \n3) Linear multiplicative \n4) Quadratic multiplicative \n"))
+
     size_of_pop = int(input("Input the desired population size: "))
     parents_algorithm = int(input("Select one of the following algorithms to select the parents: \n1) tournament selection \n2) roulette_selection\n"))
     crossover_algorithm = int(input("Select one of the following algorithms to select the crossover function: \n1)First half of parent 1 and second half of parent 2 \n2)First half of parent 2 and second half of parent 1 \n3)Randomly choose between 1) and 2)\n"))
@@ -34,7 +37,7 @@ if __name__ == "__main__":
     sol1, hill_evals = sol.hill_climbing()
     print("Best value with hill climbing was ", sol1)
 
-    sol2, annealing_evals = sol.simulated_annealing()
+    sol2, annealing_evals = sol.simulated_annealing(cooling_algorithm)
     print("Best value with simulated annealing was ", sol2)
 
     sol3, genetic_evals = sol.genetic_algorithm(size_of_pop, parents_algorithm, crossover_algorithm)
@@ -58,7 +61,9 @@ if __name__ == "__main__":
 
     plt.savefig("output/iterations.png")
 
-    plt.show()
+    #plt.show()
+
+    plt.clf()
 
 
     solutions = [sol.evaluate(sol1), sol.evaluate(sol2), sol.evaluate(sol3), sol.evaluate(sol4)]
@@ -73,6 +78,6 @@ if __name__ == "__main__":
 
     plt.savefig("output/best_evaluation.png")
 
-    plt.show()
+    #plt.show()
 
 
