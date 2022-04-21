@@ -1,0 +1,67 @@
+8 8
+MatasH 1
+Blockchain 4
+SergeyU 1
+JavaScript-NET 5
+SergeyV 1
+PHP-py 10
+BakhodirW 1
+CloudComputing-2+0 8
+LarryX 1
+CloudComputing++ 2
+ClementE 1
+Accessibility-js 6
+PhilippP 1
+Angular-NET 7
+StefanQ 1
+Ajax-3+0 8
+StadiaNextv9 20 16813 763 10
+MySQL 3
+TechWriting-js 6
+Go-NET 9
+Blockchain 6
+JavaScript-2+0 3
+Ajax-3+0 10
+Blockchain 9
+BusinessAnalysis-lib 6
+Haskell 3
+MATLAB 4
+SlidesNextv2 20 7950 259 2
+HTML++ 2
+MySQL 2
+WearOSProv2 19 22883 683 9
+COBOL-lib 5
+UXDesign 4
+PHP-py 8
+TypeScript-lib 4
+BusinessAnalysis-lib 8
+Assembly-py 7
+HTML-js 3
+MySQL 3
+Ajax-3+0 4
+CollectionsNextv1 11 8246 826 4
+Dart 2
+Go-NET 5
+HTML-js 7
+Go-NET 1
+GlassOSSv3 16 6354 984 2
+HTML-js 7
+HTML++ 3
+StreamXv9 18 1518 283 1
+Communication-lib 2
+MoonMaxv4 12 11001 690 10
+Blockchain 10
+Parallelization-NET 1
+SQL-js 7
+Blockchain++ 1
+CloudComputing-2+0 1
+Assembly-py 3
+Ajax-3+0 5
+MATLAB 4
+CloudComputing-NET 1
+CloudComputing++ 6
+CastOSProv6 10 1817 882 1
+CloudComputing++ 3
+ShoppingProv8 20 3110 295 2
+COBOL-lib 1
+Objective-C-lib 3
