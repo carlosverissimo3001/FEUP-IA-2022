@@ -7,10 +7,10 @@ def print_menu():
     print("*                                                                              *")
     print("*                                 INSTRUCTIONS                                 *")
     print("*                                                                              *")
-    print("*  1. Input file's letter without extension( from 'a' to 'f').                 *") 
-    print("*  2. Choose the size of the population to be used in the genetic algorithm.   *") 
+    print("*  1. Input file's letter without extension( from 'a' to 'f').                 *")
+    print("*  2. Choose the size of the population to be used in the genetic algorithm.   *")
     print("*  3. Pick between Tournament and Roulette Selection.                          *")
-    print("*  4. Pick the crossover function                                              *") 
+    print("*  4. Pick the crossover function                                              *")
     print("*                                                                              *")
     print("*                                                                              *")
     print("********************************************************************************")
@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     print_menu()
     filename = input("File name: ")
-    
+
     team = read_dataset(filename)
     sol = Solution(team)
 
@@ -56,7 +56,10 @@ if __name__ == "__main__":
 
     plt.legend()
 
+    plt.savefig("output/iterations.png")
+
     plt.show()
+
 
     solutions = [sol.evaluate(sol1), sol.evaluate(sol2), sol.evaluate(sol3), sol.evaluate(sol4)]
 
@@ -68,5 +71,8 @@ if __name__ == "__main__":
 
     plt.ylabel('best evaluation')
 
+    plt.savefig("output/best_evaluation.png")
+
     plt.show()
+
 
