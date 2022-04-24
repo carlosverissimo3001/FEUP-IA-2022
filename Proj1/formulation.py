@@ -55,31 +55,40 @@ class Project:
 
     def check_requirements(self, num_project, solution_members):
         assigned_members = []
+        needed_skills = []
         roles_matched = 0
+        penalties = 0
 
-        #If there are more roles than people, break
-        """ if self.n_roles != len(solution_members):
-            return -self.score/2 """
+        for role in self.roles:
+            needed_skills.append(role.name)
 
-        #For each different role
-        for i in range(self.n_roles):
-            k = 0
-            for member in solution_members:
-                if member.hasSkill(self.roles[i]) and not member.on_project:
+        for member in solution_members:
+            if member.on_project:
+                continue
+            
+            member_skills_matched = 0
+            for role in range(self.n_roles):
+                if self.roles[role].name not in needed_skills:
+                    continue
+                
+                if member.hasSkill(self.roles[role]):
                     roles_matched += 1
+                    member_skills_matched += 1
                     assigned_members.append(member)
+                    needed_skills.remove(self.roles[role].name)
                     break
 
-                k += 1
-
+            if(member_skills_matched == 0):
+                penalties += 0.5
+       
         #If all the requirements match start the project, lock the matched members
         if roles_matched == self.n_roles:
             self.has_started = True
             for member in assigned_members:
                 member.on_project = True
                 member.working_on = num_project
-        
-        return -(self.n_roles - roles_matched) * 10
+
+        return penalties
 
 class Team:
     def __init__(self, n_members, n_projects) -> None:

@@ -6,10 +6,13 @@ class Solution:
         self.team = team
         self.solution = []
         for _ in range (team.n_projects):
-            self.solution.append([random.randint(0,1) for _ in range(team.n_members)])
-            #self.solution.append([0 for _ in range(team.n_members)])
+            #self.solution.append([random.randint(0,1) for _ in range(team.n_members)])
+            self.solution.append([0 for _ in range(team.n_members)])
 
     def evaluate(self, solution):
+        if len(solution) == 0:
+            return 0
+        
         #print("NEIGHBOUR: ", solution)
         #return (sum(solution[0]) + sum(solution[1]) + sum(solution[2]) + sum(solution[3]))
         
@@ -19,8 +22,8 @@ class Solution:
             project_timer.append(0)
 
         days = 0                # Number of days passed 
+        total_days = 1
         score = 0               # Score of the completed projects
-        delta = 0               # Time passed without a project starting
         completed_projects = 0  # Number of completed projects
         unfinished_projects = 0 # Number of unfinished projects
         started_projects = 0    # Number of started projects
@@ -29,9 +32,6 @@ class Solution:
         
         i = 0         
         while True:
-            delta += 1
-            days += 1
-
             for i in range(self.team.n_projects):
                 project = self.team.projects[i]
                 solution_members.clear()
@@ -48,18 +48,20 @@ class Solution:
                     #print(project.name, "has not started yet.")
                     penalties += project.check_requirements(i, solution_members)
                     if project.has_started:
-                        #print(project.name, "has started!")
+                        #print(project.name, "has started in day: ", days)
                         #print("-------------------------\n")
                         project_timer[i] += 1
                         started_projects += 1
                         unfinished_projects += 1
                         delta = 0
+                        total_days += project.duration
 
                 # If the project has started start the timers
                 else:
                     project_timer[i] += 1
                     # If the project's duration is over
                     if project_timer[i] == project.duration:
+                        #print(project.name, "has ended in day: ", days)
                         project.is_over = True
                         project.has_started = False
                         score += project.score
@@ -72,16 +74,17 @@ class Solution:
                                 member.reset()
             
             # If all projects get completed
-            if completed_projects == self.team.n_projects:
+            if completed_projects == self.team.n_projects or unfinished_projects == 0:
                 break
             
-            # In case a new project doesn't start in a few days, stop
-            elif delta > 5 and not unfinished_projects:
-                break
-        
+            days += 1
+
         self.team.reset()
-        #print("Score: ", score, " Days: ", days, "Penalties:", penalties, "Total:", 1000 + score/days + penalties)
-        return score/days 
+        #print("Score: ", completed_projects, "Penalties: ", penalties, " Days: ", days, "Total:", completed_projects/(days + penalties) * 100)
+        if total_days == 0:
+            return 0
+
+        return score - penalties
 
     def neighbour1(self, solution):
         """Change the value of one slot"""
@@ -137,12 +140,14 @@ class Solution:
         best_sol = []
         best_sol_eval = 0
 
+        #print(solution, " Score: ", self.evaluate(solution))
         while it < 100:
             it += 1
 
             neighbour = self.neighbour3(copy.deepcopy(solution))
             evaluation = self.evaluate(neighbour)
 
+           # print(neighbour, " Score: ", evaluation)
             if evaluation > self.evaluate(solution):
                 solution = neighbour
                 #it = 0
@@ -197,41 +202,45 @@ class Solution:
         else:
             return T0 / (1 + 0.5 * it ** 2) 
         
-
-
-
     def tabu_tenure(self):
-        return 3
+        return 10
 
     def tabu_search(self):
         tabu_list = []
         counters = []
         ev = []
         iteration = 0
+        neighbour_list = []
 
         solution = self.solution.copy()
         neighbour = self.neighbour3(copy.deepcopy(solution))
         best_sol = neighbour
         ev.append(self.evaluate(best_sol))
 
-
         while iteration < 100:
-            iteration += 1
             neighbour = self.neighbour3(copy.deepcopy(neighbour))
             evaluation = self.evaluate(neighbour)
             ev.append(evaluation)
 
+            if evaluation > self.evaluate(best_sol):
+                best_sol = neighbour
+                
             if neighbour not in tabu_list:
                 tabu_list.append(neighbour)
                 counters.append([neighbour.copy(), self.tabu_tenure()])
-                if evaluation > self.evaluate(best_sol):
-                    best_sol = neighbour
 
             else:
-                for k in range(len(counters)):
+                k = 0
+                size = len(counters)
+                while k < size:
                     counters[k][1] -= 1
                     if counters[k][1] == 0:
                         tabu_list.remove(counters[k][0])
+                        counters.remove(counters[k])
+                        size -= 1
+                k += 1
+            
+            iteration += 1
 
         return best_sol, ev
 

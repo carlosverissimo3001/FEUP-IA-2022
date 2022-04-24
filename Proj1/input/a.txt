@@ -8,13 +8,14 @@ Maria 1
 Python 3
 Charlie 1
 sql 10
-Logging 5 10 5 1
+Project1 5 10 5 1
 C++ 3
-WebServer 7 10 7 2
+Project2 7 10 7 2
 HTML 3
 C++ 2
-WebChat 10 20 20 2
+Project3 10 20 20 2
 Python 3
 HTML 3
 Project4 20 10 5 1 
 sql 10
+1 2
