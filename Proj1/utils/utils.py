@@ -1,4 +1,4 @@
-from formulation import *
+from formulation.formulation import *
 
 def read_dataset(filename):
   

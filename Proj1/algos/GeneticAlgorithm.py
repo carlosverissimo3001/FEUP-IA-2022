@@ -3,10 +3,11 @@ import copy
 import numpy as np
 
 class GeneticAlgorithm:
-    def __init__(self, first, neighbour, evaluate, team, pop_size, parents_algo, crossover_algo):
+    def __init__(self, first, neighbour, evaluate, it, team, pop_size, parents_algo, crossover_algo):
         self.solution = first
         self.neighbour_function = neighbour
         self.evaluation_function = evaluate
+        self.iterations = it
         self.team = team
         self.population_size = pop_size
         self.parents_algorithm = parents_algo
@@ -18,7 +19,7 @@ class GeneticAlgorithm:
         population = self.create_initial_population()
 
         it = 0
-        while it < 100:
+        while it < self.iterations:
             it += 1
 
             population, current_best = self.generate_next_population(population)

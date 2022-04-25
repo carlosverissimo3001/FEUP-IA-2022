@@ -1,9 +1,11 @@
-from algorithms import *
+from formulation.solution import *
 from algos.HillClimbing import HillClimbing
 from algos.SimulatedAnnealing import SimulatedAnnealing
 from algos.TabuSearch import TabuSearch
 from algos.GeneticAlgorithm import GeneticAlgorithm
-from utils import *
+from utils.utils import *
+import copy
+import matplotlib.pyplot as plt
 
 def print_menu():
     print("********************************************************************************")
@@ -36,10 +38,11 @@ if __name__ == "__main__":
 
     print("Random solution: ", sol.solution)
 
-    HC_algorithm = HillClimbing(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate)
-    SA_algorithm = SimulatedAnnealing(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate, cooling_algorithm)
-    TS_algorithm = TabuSearch(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate)
-    GA_algorithm = GeneticAlgorithm(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate, sol.team, pop_size, parents_algorithm, crossover_algorithm)
+    it = team.n_members * 30
+    HC_algorithm = HillClimbing(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate, it)
+    SA_algorithm = SimulatedAnnealing(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate, it, cooling_algorithm)
+    TS_algorithm = TabuSearch(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate, it)
+    GA_algorithm = GeneticAlgorithm(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate, it, sol.team, pop_size, parents_algorithm, crossover_algorithm)
     
     sol1, hill_evals = HC_algorithm.run()
     print("Best value with hill climbing was ", sol1, " with ", max(hill_evals))
@@ -58,7 +61,7 @@ if __name__ == "__main__":
     plt.plot(genetic_evals, 'r', label='Genetic Algorithm')
     plt.plot(tabu_evals, 'k', label='Tabu Search')
 
-    plt.title('Title')
+    plt.title("Dataset " + filename.upper())
 
     plt.xlabel('iteration')
 
@@ -68,7 +71,7 @@ if __name__ == "__main__":
 
     plt.savefig("output/iterations.png")
 
-    #plt.show()
+    plt.show()
 
     plt.clf()
 
@@ -79,12 +82,14 @@ if __name__ == "__main__":
 
     plt.bar(labels, solutions)
 
+    plt.title("Dataset " + filename.upper())
+
     plt.xlabel('algorithms')
 
     plt.ylabel('best evaluation')
 
     plt.savefig("output/best_evaluation.png")
 
-    #plt.show()
+    plt.show()
 
 

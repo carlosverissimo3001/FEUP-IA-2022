@@ -59,13 +59,10 @@ class Project:
         for member in solution_members:
             member_skills_matched = 0
             for role in range(self.n_roles):
-                if self.roles[role].name not in needed_skills:
+                if self.roles[role].name not in needed_skills or member.on_project:
                     continue
                 
                 if member.hasSkill(self.roles[role]):
-                    if member.on_project:
-                        continue
-
                     roles_matched += 1
                     member_skills_matched += 1
                     assigned_members.append(member)

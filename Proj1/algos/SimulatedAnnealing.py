@@ -3,10 +3,11 @@ import copy
 import random
 
 class SimulatedAnnealing:
-    def __init__(self, first, neighbour, evaluate, cooling):
+    def __init__(self, first, neighbour, evaluate, it, cooling):
         self.solution = first
         self.neighbour_function = neighbour
         self.evaluation_function = evaluate
+        self.iterations = it
         self.cooling_option = cooling
     
     def T_schedule(self, T0, it):
@@ -29,7 +30,7 @@ class SimulatedAnnealing:
         it = 0
         T0 = 1000
 
-        while it < 100:
+        while it < self.iterations:
             T = self.T_schedule(T0, it)
             neighbour = self.neighbour_function(copy.deepcopy(solution))
             evaluation = self.evaluation_function(neighbour)

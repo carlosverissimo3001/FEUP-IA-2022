@@ -2,16 +2,17 @@ import copy
 import random
 
 class TabuSearch:
-    def __init__(self, first, neighbour, evaluate):
+    def __init__(self, first, neighbour, evaluate, it):
         self.solution = first
         self.neighbour_function = neighbour
         self.evaluation_function = evaluate
+        self.iterations = it
 
     def tabu_tenure(self):
-        return 10
+        return random.randint(int(self.iterations / 10), int(self.iterations / 5))
 
     def neighbourhood_size(self):
-        return random.randint(5, 10)
+        return random.randint(3, 5)
 
     def tabu_neighbourhood(self, solution, tabus):
         neighbourhood = []
@@ -37,7 +38,7 @@ class TabuSearch:
         ev.append(self.evaluation_function(best_sol))
 
         it = 0
-        while it < 100: 
+        while it < self.iterations: 
             # Generates a neighbourhood around the current best solution
             neighbourhood = self.tabu_neighbourhood(best_sol, tabus)
             

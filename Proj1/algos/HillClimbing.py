@@ -1,10 +1,11 @@
 import copy
 
 class HillClimbing:
-    def __init__(self, first_solution, neighbour_function, evaluation_function):
-        self.solution = first_solution
-        self.neighbour_function = neighbour_function
-        self.evaluation_function = evaluation_function
+    def __init__(self, first, neighbour, evaluation, it):
+        self.solution = first
+        self.neighbour_function = neighbour
+        self.evaluation_function = evaluation
+        self.iterations = it
 
     def run(self):
         ev = []
@@ -13,7 +14,7 @@ class HillClimbing:
         best_sol_eval = 0
 
         it = 0
-        while it < 100:
+        while it < self.iterations:
             it += 1
 
             neighbour = self.neighbour_function(copy.deepcopy(solution))
