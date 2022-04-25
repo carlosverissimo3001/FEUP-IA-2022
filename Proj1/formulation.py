@@ -1,9 +1,3 @@
-import math
-
-import matplotlib.pyplot as plt
-
-import copy
-import random
 from math import exp
 
 class Member:

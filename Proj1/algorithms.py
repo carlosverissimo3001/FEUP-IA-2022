@@ -1,5 +1,5 @@
 from formulation import *
-import numpy as np
+import random 
 
 class Solution:
     def __init__(self, team):
