@@ -1,4 +1,5 @@
 from algorithms import *
+from algos.HillClimbing import HillClimbing
 from utils import *
 
 def print_menu():
@@ -18,8 +19,6 @@ def print_menu():
 
 if __name__ == "__main__":
 
-
-
     print_menu()
     filename = input("File name: ")
 
@@ -34,7 +33,9 @@ if __name__ == "__main__":
 
     print("Random solution: ", sol.solution)
 
-    sol1, hill_evals = sol.hill_climbing()
+    HC_algorithm = HillClimbing(sol.solution, sol.neighbour3, sol.evaluate)
+
+    sol1, hill_evals = HC_algorithm.run()
     print("Best value with hill climbing was ", sol1, " with ", max(hill_evals))
 
     sol2, annealing_evals = sol.simulated_annealing(cooling_algorithm)
