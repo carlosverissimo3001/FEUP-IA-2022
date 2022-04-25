@@ -71,7 +71,7 @@ class Project:
                 if member.hasSkill(self.roles[role]):
                     if member.on_project:
                         continue
-                    
+
                     roles_matched += 1
                     member_skills_matched += 1
                     assigned_members.append(member)
