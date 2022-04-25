@@ -1,6 +1,7 @@
 from algorithms import *
 from algos.HillClimbing import HillClimbing
 from algos.SimulatedAnnealing import SimulatedAnnealing
+from algos.TabuSearch import TabuSearch
 from utils import *
 
 def print_menu():
@@ -36,7 +37,8 @@ if __name__ == "__main__":
 
     HC_algorithm = HillClimbing(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate)
     SA_algorithm = SimulatedAnnealing(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate, cooling_algorithm)
-
+    TS_algorithm = TabuSearch(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate)
+    
     sol1, hill_evals = HC_algorithm.run()
     print("Best value with hill climbing was ", sol1, " with ", max(hill_evals))
 
@@ -46,7 +48,7 @@ if __name__ == "__main__":
     sol3, genetic_evals = sol.genetic_algorithm(size_of_pop, parents_algorithm, crossover_algorithm)
     print("Best value with genetic algorithm was ", sol3, " with ", max(genetic_evals))
 
-    sol4, tabu_evals = sol.tabu_search()
+    sol4, tabu_evals = TS_algorithm.run()
     print("Best value with tabu search was ", sol4, " with ", max(tabu_evals))
 
     plt.plot(hill_evals, 'g', label='Hill Climbing')
