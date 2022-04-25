@@ -23,7 +23,7 @@ class GeneticAlgorithm:
 
             population, current_best = self.generate_next_population(population)
 
-            ev.append(current_best)
+            ev.append(current_best - 1000)
 
         #check the best of the final solution
         fitness = self.evaluate_fitness(population)
@@ -32,7 +32,7 @@ class GeneticAlgorithm:
         index = fitness.index(top_fit) # most fit element index
         all_time_best = population[index]   # actual element
 
-        ev.append(top_fit)
+        ev.append(top_fit - 1000)
 
         return all_time_best, ev
 
@@ -55,7 +55,7 @@ class GeneticAlgorithm:
     def evaluate_fitness(self, population):
         fitness = []
         for i in range(len(population)):
-            fitness.append(self.evaluation_function(population[i]))
+            fitness.append(self.evaluation_function(population[i]) + 1000)
 
         return fitness
 

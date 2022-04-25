@@ -11,11 +11,11 @@ class SimulatedAnnealing:
     
     def T_schedule(self, T0, it):
         if(self.cooling_option == 1):
-            return T0 * 0.80 ** it
+            return T0 * 0.85 ** it
         elif(self.cooling_option == 2):
-            return T0 / (1 + 2 * math.log(1 + it))
+            return T0 / (1 + 5 * math.log(1 + it))
         elif(self.cooling_option == 3):
-            return T0 / (1 + 1 * it) 
+            return T0 / (1 + 1.5 * it) 
         else:
             return T0 / (1 + 0.5 * it ** 2) 
 
@@ -27,15 +27,13 @@ class SimulatedAnnealing:
 
         solution = self.solution
         it = 0
-        T0 = 50
+        T0 = 1000
 
         while it < 100:
             T = self.T_schedule(T0, it)
             neighbour = self.neighbour_function(copy.deepcopy(solution))
             evaluation = self.evaluation_function(neighbour)
             delta = float(evaluation - self.evaluation_function(solution))
-
-            #print(delta / T, 'and', T, 'and', delta)
 
             it += 1
             
