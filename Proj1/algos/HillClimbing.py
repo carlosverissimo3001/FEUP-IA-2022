@@ -8,7 +8,7 @@ class HillClimbing:
 
     def run(self):
         ev = []
-        solution = self.solution.copy()
+        solution = self.solution
         best_sol = []
         best_sol_eval = 0
 
