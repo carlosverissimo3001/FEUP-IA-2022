@@ -6,14 +6,14 @@ class Solution:
         self.team = team
         self.solution = []
         for _ in range (team.n_projects):
-            #self.solution.append([random.randint(0,1) for _ in range(team.n_members)])
-            self.solution.append([0 for _ in range(team.n_members)])
+            self.solution.append([random.randint(0,1) for _ in range(team.n_members)])
+            #self.solution.append([0 for _ in range(team.n_members)])
 
     def evaluate(self, solution):
         if len(solution) == 0:
             return 0
         
-        #print("NEIGHBOUR: ", solution)
+       # print("NEIGHBOUR: ", solution)
         #return (sum(solution[0]) + sum(solution[1]) + sum(solution[2]) + sum(solution[3]))
         
         project_timer = []
@@ -21,12 +21,8 @@ class Solution:
         for i in range(len(solution)):
             project_timer.append(0)
 
-        days = 0                # Number of days passed 
-        total_days = 1
         score = 0               # Score of the completed projects
-        completed_projects = 0  # Number of completed projects
         unfinished_projects = 0 # Number of unfinished projects
-        started_projects = 0    # Number of started projects
         solution_members = []   # Members that were chosen to test a given project requirements
         penalties = 0           # Score penalties
         
@@ -48,15 +44,10 @@ class Solution:
                     #print(project.name, "has not started yet.")
                     penalties += project.check_requirements(i, solution_members)
                     if project.has_started:
-                        #print(project.name, "has started in day: ", days)
-                        #print("-------------------------\n")
                         project_timer[i] += 1
-                        started_projects += 1
                         unfinished_projects += 1
-                        delta = 0
-                        total_days += project.duration
 
-                # If the project has started start the timers
+                # If the project has started increment the timers
                 else:
                     project_timer[i] += 1
                     # If the project's duration is over
@@ -66,7 +57,6 @@ class Solution:
                         project.has_started = False
                         score += project.score
                         unfinished_projects -= 1
-                        completed_projects += 1
 
                         #Unlocking members
                         for member in solution_members:
@@ -74,16 +64,11 @@ class Solution:
                                 member.reset()
             
             # If all projects get completed
-            if completed_projects == self.team.n_projects or unfinished_projects == 0:
+            if unfinished_projects == 0:
                 break
-            
-            days += 1
 
         self.team.reset()
-        #print("Score: ", completed_projects, "Penalties: ", penalties, " Days: ", days, "Total:", completed_projects/(days + penalties) * 100)
-        if total_days == 0:
-            return 0
-
+        #print("Score: ", score, "Penalties: ", penalties, "Total:", score - penalties)
         return score - penalties
 
     def neighbour1(self, solution):
@@ -140,14 +125,12 @@ class Solution:
         best_sol = []
         best_sol_eval = 0
 
-        #print(solution, " Score: ", self.evaluate(solution))
         while it < 100:
             it += 1
 
             neighbour = self.neighbour3(copy.deepcopy(solution))
             evaluation = self.evaluate(neighbour)
 
-           # print(neighbour, " Score: ", evaluation)
             if evaluation > self.evaluate(solution):
                 solution = neighbour
                 #it = 0
@@ -171,7 +154,6 @@ class Solution:
         T0 = 50
 
         while it < 100:
-
             T = self.T_schedule(T0, it, cooling_algorithm)
             neighbour = self.neighbour3(copy.deepcopy(solution))
             evaluation = self.evaluate(neighbour)
@@ -205,45 +187,66 @@ class Solution:
     def tabu_tenure(self):
         return 10
 
+    def tabu_neighbourhood(self, solution, tabus):
+        neighbourhood = []
+        for i in range(10):
+            neighbour = self.neighbour3(copy.deepcopy(solution))
+            while neighbour in neighbourhood:
+                neighbour = self.neighbour3(copy.deepcopy(solution))
+            
+            #If the generated neighbour is not in the tabu list, add it
+            if str(neighbour) not in tabus and neighbour not in neighbourhood:
+                neighbourhood.append(neighbour)
+
+        return neighbourhood
+            
+
     def tabu_search(self):
-        tabu_list = []
-        counters = []
+        tabus = {}
         ev = []
-        iteration = 0
-        neighbour_list = []
 
         solution = self.solution.copy()
-        neighbour = self.neighbour3(copy.deepcopy(solution))
-        best_sol = neighbour
+        best_sol = self.neighbour3(copy.deepcopy(solution))
+        candidate_solution = best_sol
         ev.append(self.evaluate(best_sol))
 
-        while iteration < 100:
-            neighbour = self.neighbour3(copy.deepcopy(neighbour))
-            evaluation = self.evaluate(neighbour)
-            ev.append(evaluation)
-
-            if evaluation > self.evaluate(best_sol):
-                best_sol = neighbour
-                
-            if neighbour not in tabu_list:
-                tabu_list.append(neighbour)
-                counters.append([neighbour.copy(), self.tabu_tenure()])
-
-            else:
-                k = 0
-                size = len(counters)
-                while k < size:
-                    counters[k][1] -= 1
-                    if counters[k][1] == 0:
-                        tabu_list.remove(counters[k][0])
-                        counters.remove(counters[k])
-                        size -= 1
-                k += 1
+        it = 0
+        while it < 100: 
+            # Generates a neighbourhood around the current best solution
+            neighbourhood = self.tabu_neighbourhood(best_sol, tabus)
             
-            iteration += 1
+            # Searches the neighbourhood for a better solution than the one so far
+            for temp_neighbour in neighbourhood:
+                evaluation = self.evaluate(temp_neighbour)
+                #print("Candidate: ", best_sol, evaluation, " Current: ", self.evaluate(best_sol))
+                if evaluation > self.evaluate(candidate_solution):
+                    candidate_solution = temp_neighbour
 
+            # Checks if the local optima is greater than the global one
+            evaluation = self.evaluate(candidate_solution)
+            ev.append(evaluation)
+            if evaluation > self.evaluate(best_sol):
+                best_sol = candidate_solution
+            
+            # Decrements the counters for each tabu
+            old_tabus = []
+            for sol in tabus:
+                tabus[str(sol)] -= 1
+                if tabus[str(sol)] == 0:
+                    old_tabus.append(str(sol))
+
+            # Removes the null tabus
+            for old in old_tabus:
+                del tabus[old]
+
+            old_tabus.clear()
+
+            # Adds the new best neighbour of the neighbourhood to the tabu list
+            tabus[str(candidate_solution)] = self.tabu_tenure()
+
+            it += 1
+            
         return best_sol, ev
-
 
     def genetic_algorithm(self, size_of_population, parents_algorithm, crossover_algortithm):
         ev = []

@@ -35,16 +35,16 @@ if __name__ == "__main__":
     print("Random solution: ", sol.solution)
 
     sol1, hill_evals = sol.hill_climbing()
-    print("Best value with hill climbing was ", sol1)
+    print("Best value with hill climbing was ", sol1, " with ", max(hill_evals))
 
     sol2, annealing_evals = sol.simulated_annealing(cooling_algorithm)
-    print("Best value with simulated annealing was ", sol2)
+    print("Best value with simulated annealing was ", sol2, " with ", max(annealing_evals))
 
     sol3, genetic_evals = sol.genetic_algorithm(size_of_pop, parents_algorithm, crossover_algorithm)
-    print("Best value with genetic algorithm was ", sol3)
+    print("Best value with genetic algorithm was ", sol3, " with ", max(genetic_evals))
 
     sol4, tabu_evals = sol.tabu_search()
-    print("Best value with tabu search was ", sol4)
+    print("Best value with tabu search was ", sol4, " with ", max(tabu_evals))
 
     plt.plot(hill_evals, 'g', label='Hill Climbing')
     plt.plot(annealing_evals, 'b', label='Simulated Annealing')

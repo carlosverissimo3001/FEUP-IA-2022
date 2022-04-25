@@ -18,4 +18,3 @@ Python 3
 HTML 3
 Project4 20 10 5 1 
 sql 10
-1 2

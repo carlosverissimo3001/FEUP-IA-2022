@@ -63,24 +63,24 @@ class Project:
             needed_skills.append(role.name)
 
         for member in solution_members:
-            if member.on_project:
-                continue
-            
             member_skills_matched = 0
             for role in range(self.n_roles):
                 if self.roles[role].name not in needed_skills:
                     continue
                 
                 if member.hasSkill(self.roles[role]):
+                    if member.on_project:
+                        continue
+                    
                     roles_matched += 1
                     member_skills_matched += 1
                     assigned_members.append(member)
                     needed_skills.remove(self.roles[role].name)
                     break
 
-            if(member_skills_matched == 0):
+            if member_skills_matched == 0:
                 penalties += 0.5
-       
+
         #If all the requirements match start the project, lock the matched members
         if roles_matched == self.n_roles:
             self.has_started = True
