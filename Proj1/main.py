@@ -2,6 +2,7 @@ from algorithms import *
 from algos.HillClimbing import HillClimbing
 from algos.SimulatedAnnealing import SimulatedAnnealing
 from algos.TabuSearch import TabuSearch
+from algos.GeneticAlgorithm import GeneticAlgorithm
 from utils import *
 
 def print_menu():
@@ -29,7 +30,7 @@ if __name__ == "__main__":
 
     cooling_algorithm = int(input("Select one of the following cooling algorithms: \n1) Exponential multiplicative \n2) Logarithmical multiplicative \n3) Linear multiplicative \n4) Quadratic multiplicative \n"))
 
-    size_of_pop = int(input("Input the desired population size: "))
+    pop_size = int(input("Input the desired population size: "))
     parents_algorithm = int(input("Select one of the following algorithms to select the parents: \n1) tournament selection \n2) roulette_selection\n"))
     crossover_algorithm = int(input("Select one of the following algorithms to select the crossover function: \n1)First half of parent 1 and second half of parent 2 \n2)First half of parent 2 and second half of parent 1 \n3)Randomly choose between 1) and 2)\n"))
 
@@ -38,6 +39,7 @@ if __name__ == "__main__":
     HC_algorithm = HillClimbing(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate)
     SA_algorithm = SimulatedAnnealing(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate, cooling_algorithm)
     TS_algorithm = TabuSearch(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate)
+    GA_algorithm = GeneticAlgorithm(copy.deepcopy(sol.solution), sol.neighbour3, sol.evaluate, sol.team, pop_size, parents_algorithm, crossover_algorithm)
     
     sol1, hill_evals = HC_algorithm.run()
     print("Best value with hill climbing was ", sol1, " with ", max(hill_evals))
@@ -45,7 +47,7 @@ if __name__ == "__main__":
     sol2, annealing_evals = SA_algorithm.run()
     print("Best value with simulated annealing was ", sol2, " with ", max(annealing_evals))
 
-    sol3, genetic_evals = sol.genetic_algorithm(size_of_pop, parents_algorithm, crossover_algorithm)
+    sol3, genetic_evals = GA_algorithm.run()
     print("Best value with genetic algorithm was ", sol3, " with ", max(genetic_evals))
 
     sol4, tabu_evals = TS_algorithm.run()
