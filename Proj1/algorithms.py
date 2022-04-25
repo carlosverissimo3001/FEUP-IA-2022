@@ -7,26 +7,22 @@ class Solution:
         self.solution = []
         for _ in range (team.n_projects):
             self.solution.append([random.randint(0,1) for _ in range(team.n_members)])
-            #self.solution.append([0 for _ in range(team.n_members)])
 
     def evaluate(self, solution):
         if len(solution) == 0:
             return 0
         
        # print("NEIGHBOUR: ", solution)
-        #return (sum(solution[0]) + sum(solution[1]) + sum(solution[2]) + sum(solution[3]))
         
-        project_timer = []
-        #Initialization
-        for i in range(len(solution)):
-            project_timer.append(0)
-
         score = 0               # Score of the completed projects
         unfinished_projects = 0 # Number of unfinished projects
         solution_members = []   # Members that were chosen to test a given project requirements
         penalties = 0           # Score penalties
+        project_timer = []      # This is needed to count the days a project has been worked on for
         
-        i = 0         
+        for i in range(len(solution)):
+            project_timer.append(0 )
+      
         while True:
             for i in range(self.team.n_projects):
                 project = self.team.projects[i]
@@ -76,10 +72,7 @@ class Solution:
         proj = random.randrange(self.team.n_projects)
         collab = random.randrange(self.team.n_members)
 
-        if solution[proj][collab] == 1:
-            solution[proj][collab] = 0
-        else:
-            solution[proj][collab] = 1
+        solution[proj][collab] = int(not(solution[proj][collab]))
 
         return solution
 
@@ -93,18 +86,9 @@ class Solution:
 
         collab1 = random.randrange(collabs_num)
         collab2 = random.randrange(collabs_num)
-
-
-        if solution[proj1][collab1] == 1:
-            solution[proj1][collab1] = 0
-        else:
-            solution[proj1][collab1] = 1
-
-
-        if solution[proj2][collab2] == 1:
-            solution[proj2][collab2] = 0
-        else:
-            solution[proj2][collab2] = 1
+        
+        solution[proj1][collab1] = int(not(solution[proj1][collab1]))
+        solution[proj2][collab2] = int(not(solution[proj2][collab2]))
 
         return solution
 

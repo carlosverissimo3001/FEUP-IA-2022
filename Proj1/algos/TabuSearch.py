@@ -1,4 +1,5 @@
 import copy
+import random
 
 class TabuSearch:
     def __init__(self, first, neighbour, evaluate):
@@ -9,9 +10,12 @@ class TabuSearch:
     def tabu_tenure(self):
         return 10
 
+    def neighbourhood_size(self):
+        return random.randint(5, 10)
+
     def tabu_neighbourhood(self, solution, tabus):
         neighbourhood = []
-        for i in range(10):
+        for i in range(self.neighbourhood_size()):
             neighbour = self.neighbour_function(copy.deepcopy(solution))
             while neighbour in neighbourhood:
                 neighbour = self.neighbour_function(copy.deepcopy(solution))
