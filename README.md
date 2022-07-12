@@ -10,3 +10,5 @@ Solution for Google Hash Code utilizing optimization techniques such as Genetic 
 
 #### Second Project
 Credit card fraud detection -  preparing the data and creating artificial intelligence models to determine if a given transaction is valid
+
+#### Final Grade: 18/20
