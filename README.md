@@ -1,16 +1,10 @@
-# FEUP-IA-2022
+# Algorithm Design
 
-Practical work developed in Artificial Intelligence Class
+Practical work developed in Algorithm Design Class
 
-Class Syllabus [@FEUP](https://sigarra.up.pt/feup/en/UCURR_GERAL.FICHA_UC_VIEW?pv_ocorrencia_id=484442)
-
-#### First Project
-Solution for Google Hash Code utilizing optimization techniques such as Genetic Algorithms.
-
-#### Second Project
-Credit card fraud detection -  preparing the data and creating artificial intelligence models to determine if a given transaction is valid
+Class Syllabus [@FEUP](https://sigarra.up.pt/feup/en/ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484424)
 
 | **Year** | **Term**  | **Course** | **Final Grade** |
 |   ---    |    ---    |    ---     |    ---          |
-| 3rd | 2nd | Bachelor in Informatics and Computing Engineering | **18** |
+| 3rd | 2nd | Bachelor in Informatics and Computing Engineering | **10** |
 
