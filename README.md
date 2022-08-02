@@ -1,14 +1,16 @@
-# Artificial-Intelligence
+# FEUP-IA-2022
 
-## LEIC - 3rd year / 2nd semester
+Practical work developed in Artificial Intelligence Class
 
-#### Course Page: https://sigarra.up.pt/feup/en/UCURR_GERAL.FICHA_UC_VIEW?pv_ocorrencia_id=484442
+Class Syllabus [@FEUP](https://sigarra.up.pt/feup/en/UCURR_GERAL.FICHA_UC_VIEW?pv_ocorrencia_id=484442)
 
-## Projects
 #### First Project
 Solution for Google Hash Code utilizing optimization techniques such as Genetic Algorithms.
 
 #### Second Project
 Credit card fraud detection -  preparing the data and creating artificial intelligence models to determine if a given transaction is valid
 
-#### Final Grade: 18/20
+| **Year** | **Term**  | **Course** | **Final Grade** |
+|   ---    |    ---    |    ---     |    ---          |
+| 3rd | 2nd | Bachelor in Informatics and Computing Engineering | **18** |
+
